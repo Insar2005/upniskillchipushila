@@ -2023,5 +2023,67 @@ function renderProfileAreas(){const el=document.getElementById('profileAreas');i
 }
 
 restoreFinanceDemoPack();restoreFinanceOperations();restoreFinanceAnalysis();renderFinanceEntries();document.querySelectorAll('#finance > *').forEach((item,i)=>item.style.setProperty('--finance-step',i));selectFinancePeriod('month');renderPlanTasks();renderProfileAreas();drawBars();updateTaskCount();updateNotificationBadge();updateFinanceTotals();renderSavingsGoal();renderFinanceAdvice();setInterval(()=>{if(document.getElementById('finance')?.classList.contains('active'))updateFinanceAdviceCountdown()},1000);document.getElementById('aiTip').style.display='none';document.getElementById('aiFab').classList.add('compact');requestAnimationFrame(()=>animatePremiumTab('home'));
+/* v25: Cloud sync bridge. Only activates in authenticated Telegram WebApp. */
+(function(){
+ const API='https://skillup-api-production-3d6c.up.railway.app';
+ const sections={
+   development:['skillup_development_v16'],
+   finances:['skillup_finance_operations_v11','skillup_finance_demo_pack_v18','skillup_finance_demo_goal_v18'],
+   progress:['skillup-v22-progress-history']
+ };
+ // Discover exact goal/demo keys declared by the existing front-end at build time.
+ const auth=window.Telegram?.WebApp?.initData;
+ if(!auth){console.info('[SkillUp] Local mode: no Telegram initData');return;}
+ const revisions={},lastSynced={},pending=new Set();let paused=false,hydrating=false;
+ const keysFor=k=>Object.entries(sections).find(([,keys])=>keys.includes(k))?.[0];
+ const headers={'Content-Type':'application/json','X-Telegram-Init-Data':auth};
+ async function request(kind,method,body){
+   const res=await fetch(`${API}/api/v1/documents/${kind}`,{method,headers,body:body?JSON.stringify(body):undefined,cache:'no-store'});
+   if(!res.ok){const err=new Error(`API ${res.status}`);err.status=res.status;throw err;}
+   return res.json();
+ }
+ function snapshot(kind){const items={};for(const key of sections[kind]){const v=localStorage.getItem(key);if(v!==null)items[key]=v;}return {items};}
+ function digest(data){return JSON.stringify(data.items||{});}
+ async function push(kind){
+   if(paused||hydrating)return;
+   const payload=snapshot(kind), hash=digest(payload);
+   if(lastSynced[kind]===hash)return;
+   try{const result=await request(kind,'PUT',{payload,revision:revisions[kind]});revisions[kind]=result.revision;lastSynced[kind]=hash;}
+   catch(e){if(e.status===409||e.status===401){paused=true;console.error('[SkillUp] Sync paused:',e.message);}else console.warn('[SkillUp] Retry sync:',e.message);}
+ }
+ let timer;
+ function schedule(kind){if(paused||hydrating)return;pending.add(kind);clearTimeout(timer);timer=setTimeout(async()=>{const copy=[...pending];pending.clear();for(const k of copy)await push(k);},900);}
+ async function boot(){
+   try{
+     const who=await fetch(`${API}/api/v1/me`,{headers,cache:'no-store'});
+     if(!who.ok)throw new Error('Telegram auth failed: '+who.status);
+     hydrating=true;let changed=false;
+     for(const kind of Object.keys(sections)){
+       const result=await request(kind,'GET');const remote=result.document;
+       if(remote){
+         revisions[kind]=Number(remote.revision);
+         const items=remote.payload?.items||{};
+         for(const key of sections[kind]){
+           const value=Object.prototype.hasOwnProperty.call(items,key)?items[key]:null;
+           if(value===null){if(localStorage.getItem(key)!==null){localStorage.removeItem(key);changed=true;}}
+           else if(typeof value==='string' && localStorage.getItem(key)!==value){localStorage.setItem(key,value);changed=true;}
+         }
+         lastSynced[kind]=digest(snapshot(kind));
+       }else{revisions[kind]=null;}
+     }
+     hydrating=false;
+     // Reinitialize the existing localStorage-based app using downloaded values.
+     if(changed){location.reload();return;}
+     for(const kind of Object.keys(sections))if(revisions[kind]===null)await push(kind);
+     const originalSet=Storage.prototype.setItem, originalRemove=Storage.prototype.removeItem;
+     Storage.prototype.setItem=function(key,value){const result=originalSet.apply(this,arguments);if(this===localStorage){const kind=keysFor(String(key));if(kind)schedule(kind);}return result;};
+     Storage.prototype.removeItem=function(key){const result=originalRemove.apply(this,arguments);if(this===localStorage){const kind=keysFor(String(key));if(kind)schedule(kind);}return result;};
+     window.addEventListener('visibilitychange',()=>{if(document.visibilityState==='visible')for(const kind of Object.keys(sections))schedule(kind);});
+     console.info('[SkillUp] Cloud sync enabled');
+   }catch(e){hydrating=false;console.warn('[SkillUp] Offline/local mode:',e.message);}
+ }
+ boot();
+})();
+
 </script>
 </body></html>
