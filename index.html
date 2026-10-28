@@ -2023,67 +2023,43 @@ function renderProfileAreas(){const el=document.getElementById('profileAreas');i
 }
 
 restoreFinanceDemoPack();restoreFinanceOperations();restoreFinanceAnalysis();renderFinanceEntries();document.querySelectorAll('#finance > *').forEach((item,i)=>item.style.setProperty('--finance-step',i));selectFinancePeriod('month');renderPlanTasks();renderProfileAreas();drawBars();updateTaskCount();updateNotificationBadge();updateFinanceTotals();renderSavingsGoal();renderFinanceAdvice();setInterval(()=>{if(document.getElementById('finance')?.classList.contains('active'))updateFinanceAdviceCountdown()},1000);document.getElementById('aiTip').style.display='none';document.getElementById('aiFab').classList.add('compact');requestAnimationFrame(()=>animatePremiumTab('home'));
-/* v25: Cloud sync bridge. Only activates in authenticated Telegram WebApp. */
+/* v25.1: Cloud sync diagnostics and resilient change tracking. */
 (function(){
  const API='https://skillup-api-production-3d6c.up.railway.app';
- const sections={
-   development:['skillup_development_v16'],
-   finances:['skillup_finance_operations_v11','skillup_finance_demo_pack_v18','skillup_finance_demo_goal_v18'],
-   progress:['skillup-v22-progress-history']
- };
- // Discover exact goal/demo keys declared by the existing front-end at build time.
- const auth=window.Telegram?.WebApp?.initData;
- if(!auth){console.info('[SkillUp] Local mode: no Telegram initData');return;}
- const revisions={},lastSynced={},pending=new Set();let paused=false,hydrating=false;
- const keysFor=k=>Object.entries(sections).find(([,keys])=>keys.includes(k))?.[0];
+ const sections={development:['skillup_development_v16'],finances:['skillup_finance_operations_v11','skillup_finance_demo_pack_v18','skillup_finance_demo_goal_v18'],progress:['skillup-v22-progress-history']};
+ const auth=window.Telegram?.WebApp?.initData||'';
+ const status=document.createElement('div');status.id='skillup-cloud-status';
+ Object.assign(status.style,{position:'fixed',zIndex:'99999',bottom:'85px',left:'50%',transform:'translateX(-50%)',padding:'8px 12px',borderRadius:'12px',font:'12px system-ui,sans-serif',background:'#182b22',color:'#b7f2cc',border:'1px solid #3c6b50',boxShadow:'0 4px 16px #0008',maxWidth:'92vw',textAlign:'center',pointerEvents:'none'});
+ document.body.appendChild(status);
+ function show(t,bad=false){status.textContent=t;status.style.color=bad?'#ffd2b5':'#b7f2cc';status.style.borderColor=bad?'#aa684d':'#3c6b50';console.info('[SkillUp Sync]',t);}
+ if(!auth){show('⚠️ Локальный режим: Telegram не передал авторизацию',true);return;}
  const headers={'Content-Type':'application/json','X-Telegram-Init-Data':auth};
- async function request(kind,method,body){
-   const res=await fetch(`${API}/api/v1/documents/${kind}`,{method,headers,body:body?JSON.stringify(body):undefined,cache:'no-store'});
-   if(!res.ok){const err=new Error(`API ${res.status}`);err.status=res.status;throw err;}
-   return res.json();
- }
- function snapshot(kind){const items={};for(const key of sections[kind]){const v=localStorage.getItem(key);if(v!==null)items[key]=v;}return {items};}
- function digest(data){return JSON.stringify(data.items||{});}
- async function push(kind){
-   if(paused||hydrating)return;
-   const payload=snapshot(kind), hash=digest(payload);
-   if(lastSynced[kind]===hash)return;
-   try{const result=await request(kind,'PUT',{payload,revision:revisions[kind]});revisions[kind]=result.revision;lastSynced[kind]=hash;}
-   catch(e){if(e.status===409||e.status===401){paused=true;console.error('[SkillUp] Sync paused:',e.message);}else console.warn('[SkillUp] Retry sync:',e.message);}
- }
- let timer;
- function schedule(kind){if(paused||hydrating)return;pending.add(kind);clearTimeout(timer);timer=setTimeout(async()=>{const copy=[...pending];pending.clear();for(const k of copy)await push(k);},900);}
- async function boot(){
-   try{
-     const who=await fetch(`${API}/api/v1/me`,{headers,cache:'no-store'});
-     if(!who.ok)throw new Error('Telegram auth failed: '+who.status);
-     hydrating=true;let changed=false;
-     for(const kind of Object.keys(sections)){
-       const result=await request(kind,'GET');const remote=result.document;
-       if(remote){
-         revisions[kind]=Number(remote.revision);
-         const items=remote.payload?.items||{};
-         for(const key of sections[kind]){
-           const value=Object.prototype.hasOwnProperty.call(items,key)?items[key]:null;
-           if(value===null){if(localStorage.getItem(key)!==null){localStorage.removeItem(key);changed=true;}}
-           else if(typeof value==='string' && localStorage.getItem(key)!==value){localStorage.setItem(key,value);changed=true;}
-         }
-         lastSynced[kind]=digest(snapshot(kind));
-       }else{revisions[kind]=null;}
-     }
-     hydrating=false;
-     // Reinitialize the existing localStorage-based app using downloaded values.
-     if(changed){location.reload();return;}
-     for(const kind of Object.keys(sections))if(revisions[kind]===null)await push(kind);
-     const originalSet=Storage.prototype.setItem, originalRemove=Storage.prototype.removeItem;
-     Storage.prototype.setItem=function(key,value){const result=originalSet.apply(this,arguments);if(this===localStorage){const kind=keysFor(String(key));if(kind)schedule(kind);}return result;};
-     Storage.prototype.removeItem=function(key){const result=originalRemove.apply(this,arguments);if(this===localStorage){const kind=keysFor(String(key));if(kind)schedule(kind);}return result;};
-     window.addEventListener('visibilitychange',()=>{if(document.visibilityState==='visible')for(const kind of Object.keys(sections))schedule(kind);});
-     console.info('[SkillUp] Cloud sync enabled');
-   }catch(e){hydrating=false;console.warn('[SkillUp] Offline/local mode:',e.message);}
- }
+ const revisions={},hashes={};let hydrating=false,active=false,busy=false;
+ function snapshot(kind){const items={};for(const key of sections[kind]){const value=localStorage.getItem(key);if(value!==null)items[key]=value;}return {items};}
+ const digest=obj=>JSON.stringify(obj.items||{});
+ const hasData=obj=>Object.keys(obj.items||{}).length>0;
+ async function api(path,method='GET',body){const r=await fetch(API+path,{method,headers,body:body===undefined?undefined:JSON.stringify(body),cache:'no-store'});if(!r.ok){const e=new Error('HTTP '+r.status);e.status=r.status;throw e;}return r.json();}
+ async function upload(kind){const payload=snapshot(kind),hash=digest(payload);if(hashes[kind]===hash||!hasData(payload))return false;
+   const result=await api('/api/v1/documents/'+kind,'PUT',{payload,revision:revisions[kind]??null});revisions[kind]=Number(result.revision);hashes[kind]=hash;return true;}
+ async function flush(){if(!active||busy||hydrating)return;busy=true;try{let updated=false;for(const kind of Object.keys(sections)){if(await upload(kind))updated=true;}show(updated?'☁️ Данные сохранены в PostgreSQL':'☁️ Облако подключено');}
+ catch(e){active=false;show('⚠️ Синхронизация остановлена: '+e.message,true);console.error('[SkillUp Sync]',e);}
+ finally{busy=false;}}
+ async function boot(){show('☁️ Проверяем Telegram и базу…');try{
+   await api('/api/v1/me');hydrating=true;let changed=false;
+   for(const kind of Object.keys(sections)){
+     const result=await api('/api/v1/documents/'+kind);const doc=result.document;
+     if(doc){revisions[kind]=Number(doc.revision);const items=doc.payload?.items||{};
+       for(const key of sections[kind]){const value=Object.prototype.hasOwnProperty.call(items,key)?items[key]:null;
+         if(value===null){if(localStorage.getItem(key)!==null){localStorage.removeItem(key);changed=true;}}
+         else if(typeof value==='string'&&localStorage.getItem(key)!==value){localStorage.setItem(key,value);changed=true;}}
+       hashes[kind]=digest(snapshot(kind));
+     }else{revisions[kind]=null;}
+   }
+   hydrating=false;
+   if(changed){show('☁️ Данные получены, обновляем экран…');location.reload();return;}
+   active=true;await flush();if(active){setInterval(flush,2200);document.addEventListener('visibilitychange',()=>{if(!document.hidden)flush();});}
+ }catch(e){hydrating=false;show('⚠️ Нет облачной синхронизации: '+e.message,true);console.error('[SkillUp Sync]',e);}}
  boot();
 })();
-
 </script>
 </body></html>

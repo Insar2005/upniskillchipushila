@@ -1,0 +1,1 @@
+SkillUp v25.1: fix silent sync failures. Deploy frontend files only. Status at bottom shows Telegram/API connection and saving. No server code changes. Never share bot token. If HTTP 401: verify TELEGRAM_BOT_TOKEN and Telegram launch. If HTTP 403/CORS: verify CORS_ORIGINS. If HTTP 404: deploy v25 API UPDATE.
