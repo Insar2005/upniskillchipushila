@@ -5,7 +5,7 @@
 <meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no,viewport-fit=cover">
 <meta name="theme-color" content="#090d0b">
 <title>SkillUp — твой прогресс</title>
-<script src="https://telegram.org/js/telegram-web-app.js?56"></script>
+<script src="https://telegram.org/js/telegram-web-app.js"></script>
 <style>
 :root{--bg:#090d0b;--panel:#121916;--panel2:#18211c;--line:#26352d;--mint:#a1e9bf;--green:#28b77b;--muted:#8d9b92;--white:#f1f7f3;--danger:#ef9d9d}
 *{box-sizing:border-box}html{background:var(--bg)}body{margin:0;background:radial-gradient(ellipse at 50% -10%,#173326 0%,var(--bg) 43%);color:var(--white);font:15px/1.4 -apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Arial,sans-serif;min-height:100vh;padding-bottom:calc(86px + env(safe-area-inset-bottom));-webkit-tap-highlight-color:transparent}
@@ -589,6 +589,226 @@ textarea.dev-input{resize:vertical;min-height:95px}
 
 @media(prefers-reduced-motion:reduce){.home22-tile,.home22-detail{animation:none!important;transition:none!important}}
 
+
+/* v25: compact goal editor, separate milestones and repeatable actions */
+.v25-panel{border:1px solid #355744;border-radius:17px;padding:14px;margin-top:16px;background:rgba(31,67,47,.17)}
+.v25-panel-head{display:flex;align-items:center;justify-content:space-between;gap:10px;margin-bottom:7px}
+.v25-panel-head h4{font-size:15px;color:#e6f9e9;margin:0}
+.v25-hint{font-size:12px;color:#9fbaa9;line-height:1.5;margin:5px 0 10px}
+.v25-row{display:flex;align-items:flex-start;gap:9px;margin:9px 0}
+.v25-row .dev-input{flex:1;min-width:0;margin:0}
+.v25-remove{border:1px solid #704a4a;background:rgba(80,36,37,.15);color:#eeb6ae;border-radius:11px;padding:0 11px;min-height:43px;cursor:pointer;flex-shrink:0}
+.v25-add{border:1px solid #4d9771;color:#b6edcc;background:rgba(67,144,99,.13);border-radius:11px;min-height:38px;padding:8px 12px;font-weight:700;cursor:pointer}
+.v25-details{margin-top:14px;border-top:1px solid #2d4938;padding-top:12px}
+.v25-details summary{cursor:pointer;color:#b5e5c5;font-weight:700;font-size:13px}
+.v25-action{border:1px solid #2e503b;border-radius:13px;padding:11px;margin-top:10px;background:#0d2017}
+.v26-day-picker{display:grid;grid-template-columns:repeat(7,minmax(0,1fr));gap:5px;margin-top:9px}
+.v26-day-btn{display:flex;align-items:center;justify-content:center;min-width:0;min-height:40px;padding:0;border:1px solid #315341;border-radius:10px;background:#0a1b12;color:#a7c6b2;font-family:inherit;font-weight:700;font-size:12px;cursor:pointer;transition:background .2s,border-color .2s,color .2s,transform .18s}
+.v26-day-btn[aria-pressed="true"]{color:#092a1a;background:#9fe9bd;border-color:#9fe9bd;box-shadow:0 2px 12px rgba(132,220,168,.13)}
+.v26-day-btn:active{transform:scale(.94)}
+.v26-day-btn:focus-visible{outline:2px solid #b9f1ce;outline-offset:2px}
+.v26-week-label{margin:10px 0 0;color:#c0dec9;font-size:12px;font-weight:700}
+.v25-action-top{display:flex;gap:8px;align-items:center}
+.v25-action-top .dev-input{flex:1;min-width:0}
+.v25-action-grid{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-top:8px}
+.v25-action-grid label{margin:0!important;font-size:11px!important}
+.v25-action-grid .dev-input{width:100%;margin-top:5px}
+.v25-regular-item{display:flex;align-items:center;justify-content:space-between;gap:10px;padding:10px 0;border-bottom:1px solid #264533}
+.v25-regular-item>div{flex:1;min-width:0}
+.v25-regular-item p{margin:3px 0 0;color:#9bb8a5;font-size:11px}
+@media(max-width:355px){.v25-action-grid{grid-template-columns:1fr}.v25-panel{padding:10px}}
+
+
+/* SkillUp v28 — today's actions above the horizontal goal boards. */
+.home28-today{margin:14px 0 20px;padding:16px 15px 12px;border:1px solid #365d47;border-radius:21px;background:linear-gradient(145deg,#192f22,#111d17 93%);box-shadow:0 10px 26px #020b0638;animation:homeReveal .42s ease-out both}
+.home28-head{display:flex;justify-content:space-between;align-items:center;gap:10px;margin-bottom:7px}
+.home28-head h2{font-size:17px;margin:0;color:#f2fff5;letter-spacing:-.3px}
+.home28-pill{font-size:11px;color:#b9efd0;border-radius:20px;background:#244b34;padding:6px 9px;white-space:nowrap;font-variant-numeric:tabular-nums;font-weight:770}
+.home28-desc{font-size:11px;color:#9ab7a4;margin:0 0 12px;line-height:1.4}
+.home28-bar{height:5px;overflow:hidden;background:#2a4133;border-radius:20px;margin-bottom:10px}
+.home28-bar>span{height:100%;display:block;background:linear-gradient(90deg,#39ae7d,#a8f3c5);border-radius:inherit;transition:width .38s ease}
+.home28-list{display:grid;gap:8px}
+.home28-item{display:flex;align-items:center;gap:10px;padding:10px;background:#0e1c14;border:1px solid #294936;border-radius:13px;min-width:0;transition:background .25s,border-color .25s,opacity .25s}
+.home28-item.is-done{background:#15261b;border-color:#294632;opacity:.75}
+.home28-check{width:38px;height:38px;min-width:38px;border:1.5px solid #6ba882;border-radius:12px;color:#c5f3d5;background:#152d20;font:800 20px/1 inherit;display:grid;place-items:center;cursor:pointer;transition:background .2s,transform .18s}
+.home28-check[aria-pressed=true]{background:#a1eabf;color:#143322;border-color:#a1eabf}
+.home28-check:active{transform:scale(.93)}
+.home28-check:focus-visible,.home28-more:focus-visible{outline:2px solid #dbffe4;outline-offset:2px}
+.home28-info{flex:1;min-width:0}
+.home28-task{font-size:12.5px;line-height:1.35;font-weight:710;color:#f0fbf2;overflow-wrap:anywhere}
+.home28-item.is-done .home28-task{text-decoration:line-through;color:#b2c9ba}
+.home28-meta{font-size:10px;color:#9ebba9;line-height:1.35;margin-top:3px;overflow-wrap:anywhere}
+.home28-empty{text-align:center;padding:20px 9px;color:#b9dcc5;font-size:12px;line-height:1.6}
+.home28-more{display:flex;justify-content:center;align-items:center;gap:7px;width:100%;background:transparent;color:#afeac5;border:0;border-top:1px solid #2b4838;margin-top:10px;padding:13px 2px 2px;font-weight:750;font-size:12px;cursor:pointer}
+@media(max-width:350px){.home28-today{padding:13px 11px 11px}.home28-item{padding:8px}.home28-task{font-size:11.5px}.home28-check{width:35px;min-width:35px;height:35px}}
+@media(prefers-reduced-motion:reduce){.home28-today{animation:none!important}.home28-bar>span,.home28-item,.home28-check{transition:none!important}}
+
+/* SkillUp v27 — premium reversible quick-action tiles on Home. */
+.home22-tile.home27-card{
+  display:block;position:relative;padding:0!important;overflow:visible;
+  perspective:1000px;border:0!important;background:transparent!important;
+  box-shadow:none!important;isolation:isolate;transform:none!important;
+}
+.home27-inner{position:absolute;inset:0;transform-style:preserve-3d;
+  transition:transform .62s cubic-bezier(.22,.74,.21,1);border-radius:inherit;
+}
+.home27-card.is-flipped .home27-inner{transform:rotateY(180deg)}
+.home27-face{position:absolute;inset:0;display:flex;flex-direction:column;overflow:hidden;
+  border:1px solid #365341;border-radius:inherit;backface-visibility:hidden;
+  -webkit-backface-visibility:hidden;color:#eff9f1;
+  background:radial-gradient(circle at 96% 0%,#315f40 0%,#1b3124 42%,#121c16 98%);
+  box-shadow:0 7px 18px #00000020;
+}
+.home27-card[data-kind="skill"] .home27-face{background:radial-gradient(circle at 90% 0%,#285642,#1a2d28 47%,#111c18)}
+.home27-card[data-kind="habit"] .home27-face{background:radial-gradient(circle at 90% 0%,#354f35,#1d2b22 48%,#121c16)}
+.home27-card.is-paused .home27-face{opacity:.81}
+.home27-face-front{padding:0}
+.home27-front-trigger{width:100%;height:100%;display:flex;flex-direction:column;gap:3px;
+  justify-content:space-between;align-items:stretch;border:0;background:transparent;
+  color:inherit;text-align:left;padding:9px 8px 8px;cursor:pointer;font:inherit}
+.home27-front-trigger .home22-tile-main{justify-content:center}
+.home27-front-trigger .home22-tile-foot{white-space:nowrap;min-height:14px}
+.home27-flip-hint{color:#a6eac0;font-weight:750;white-space:nowrap;font-size:9px}
+.home27-face-back{transform:rotateY(180deg);padding:7px 6px 6px;gap:3px;
+  background:linear-gradient(155deg,#24442f,#13251b 98%)!important;border-color:#609570;
+}
+.home27-back-head{display:flex;align-items:center;justify-content:space-between;gap:3px;min-height:13px}
+.home27-back-head span{font-weight:800;color:#baf6ce;font-size:9px;letter-spacing:.05px}
+.home27-flip-back{width:19px;height:19px;display:grid;place-items:center;flex-shrink:0;
+  border:1px solid #5d8e6c;border-radius:6px;color:#c8f8da;background:#294a34;
+  font-size:12px;line-height:1;padding:0;cursor:pointer}
+.home27-back-body{flex:1;min-height:0;display:flex;flex-direction:column;align-items:stretch;justify-content:center;gap:2px}
+.home27-today-name{font-size:10px;font-weight:760;line-height:1.17;overflow-wrap:anywhere;
+  display:-webkit-box;-webkit-box-orient:vertical;-webkit-line-clamp:2;overflow:hidden;
+}
+.home27-back-empty{font-size:9px;line-height:1.3;color:#d0e7d6;text-align:center;overflow-wrap:anywhere}
+.home27-action-row{display:flex;align-items:center;justify-content:center;gap:3px;min-height:27px}
+.home27-action-check{height:28px;width:30px;min-width:30px;border:1px solid #8acb9b;
+  border-radius:9px;background:#192f23;color:#c6f7d8;font-size:15px;font-weight:880;
+  display:grid;place-items:center;cursor:pointer;transition:background .18s,color .18s,transform .18s}
+.home27-action-check[aria-pressed="true"]{background:#a3ecc0;color:#10341d;border-color:#a3ecc0}
+.home27-action-check:active{transform:scale(.93)}
+.home27-pager-button{width:20px;height:27px;flex-shrink:0;padding:0;border:0;
+  color:#d5f8de;background:transparent;font-size:21px;font-weight:700;cursor:pointer}
+.home27-pager-count{color:#bad6c3;font-size:9px;white-space:nowrap;font-variant-numeric:tabular-nums}
+.home27-detail-button{display:block;flex-shrink:0;width:100%;border:1px solid #608d6b;
+  border-radius:7px;background:#1d3b29;color:#c9f7d6;font-size:9px;font-weight:830;
+  min-height:21px;line-height:1.1;padding:3px 2px;cursor:pointer}
+.home27-card button:focus-visible{outline:2px solid #d6ffe2;outline-offset:-3px}
+.home27-back-state{font-size:8px;color:#a8c6ae;text-align:center;margin-top:1px}
+.home27-back-state.is-done{color:#b0f0c9}
+@media(min-width:460px){
+  .home27-front-trigger{padding:12px 11px 10px}
+  .home27-face-back{padding:10px;gap:5px}
+  .home27-back-head span{font-size:11px}
+  .home27-today-name{font-size:12px;-webkit-line-clamp:3}
+  .home27-back-empty{font-size:11px}
+  .home27-action-check{width:36px;height:34px}
+  .home27-pager-button{height:34px;width:26px}
+  .home27-detail-button{font-size:11px;min-height:28px}
+}
+@media(max-width:350px){
+  .home27-front-trigger{padding:8px 6px 7px}
+  .home27-face-back{padding:5px 4px;gap:1px}
+  .home27-today-name{font-size:9px}
+  .home27-back-head span{font-size:8px}
+  .home27-back-empty{font-size:8.5px}
+  .home27-action-row{gap:1px}
+  .home27-action-check{width:26px;min-width:26px;height:26px}
+  .home27-pager-button{width:16px;font-size:18px}
+  .home27-detail-button{min-height:20px;font-size:8.5px}
+  .home27-flip-hint{font-size:8px}
+}
+@media(prefers-reduced-motion:reduce){.home27-inner,.home27-action-check{transition:none!important}}
+
+
+/* SkillUp v29 — a calm, goal-scoped AI workspace */
+.ai29-screen{animation:ai29-in .42s cubic-bezier(.2,.7,.2,1) both}
+@keyframes ai29-in{from{opacity:0;transform:translateY(12px)}to{opacity:1;transform:none}}
+.ai29-hero{background:radial-gradient(circle at 98% 0%,#3b805837,transparent 54%),linear-gradient(145deg,#182c20,#101a14);border:1px solid #325640;border-radius:22px;padding:17px;margin-bottom:12px}
+.ai29-hero-top{display:flex;align-items:center;justify-content:space-between;gap:8px}
+.ai29-kicker{font-size:10px;letter-spacing:1.5px;font-weight:850;color:#9decc1;text-transform:uppercase}
+.ai29-demo{font-size:10px;color:#acc8b4;border-radius:30px;border:1px solid #3b5a47;padding:5px 8px}
+.ai29-hero h2{font-size:21px;line-height:1.2;letter-spacing:-.5px;margin:9px 0 6px;color:#eefcf2}
+.ai29-hero p{color:#aabfb0;font-size:12px;line-height:1.5;margin:0 0 13px}
+.ai29-scope-label{display:block;font-size:11px;font-weight:750;margin-bottom:7px;color:#c4d6c9}
+.ai29-select{width:100%;height:44px;border:1px solid #496d55;border-radius:12px;background:#0b1a11;color:#eaf8ed;padding:0 13px;font-weight:700;outline-offset:2px}
+.ai29-path{display:flex;align-items:center;gap:6px;color:#aac9b5;font-size:11px;margin-top:9px;min-height:17px;flex-wrap:wrap}
+.ai29-context{background:#121e17;border:1px solid #2e4736;border-radius:19px;padding:15px;margin-bottom:12px}
+.ai29-context-title{font-size:16px;font-weight:800;margin:0 0 5px;line-height:1.35}
+.ai29-context-meta{font-size:11px;color:#abc2b0;line-height:1.4}
+.ai29-meter{display:flex;align-items:center;gap:12px;margin:13px 0 0}
+.ai29-meter-circle{width:55px;height:55px;flex:none;border-radius:50%;display:grid;place-items:center;background:conic-gradient(#91e3ae var(--pc),#2c4435 0);position:relative}
+.ai29-meter-circle:before{content:"";position:absolute;inset:6px;background:#132219;border-radius:50%}
+.ai29-meter-circle span{position:relative;font-size:12px;font-weight:800;color:#a4e9bd}
+.ai29-meter-copy{display:flex;flex-direction:column;gap:5px;font-size:11px;color:#bacabc;min-width:0}
+.ai29-meter-copy strong{font-size:12px;color:#f2fbf4;line-height:1.4}
+.ai29-quick-row{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-top:12px}
+.ai29-action{border:1px solid #416c4e;background:#193726;border-radius:12px;font-weight:750;font-size:11px;min-height:41px;padding:9px;color:#b8f1cc;text-align:center}
+.ai29-action:active,.ai29-scope-jump:active{transform:scale(.98)}
+.ai29-action-main{background:#a7ecc0;color:#0c2a19;border-color:transparent}
+.ai29-summary-mini{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:8px;margin:13px 0 0}
+.ai29-summary-mini div{padding:10px 4px;border:1px solid #2b4735;border-radius:12px;background:#0e1c13;text-align:center}
+.ai29-summary-mini b{font-size:19px;color:#a7e9bc;display:block}
+.ai29-summary-mini small{font-size:9px;color:#b0c4b5}
+.ai29-session{background:linear-gradient(160deg,#183324,#122016);border:1px solid #345c43;border-radius:19px;padding:15px;margin-bottom:12px}
+.ai29-session-head{display:flex;justify-content:space-between;align-items:center;gap:8px}
+.ai29-session h3,.ai29-chat-heading,.ai29-notebook-heading{font-size:14px;font-weight:850;margin:0}
+.ai29-session-tag{color:#aee8c3;font-size:10px;white-space:nowrap}
+.ai29-session-sub{color:#b4cbbb;font-size:11px;line-height:1.5;margin:8px 0 11px}
+.ai29-lesson-top{display:flex;align-items:center;justify-content:space-between;gap:8px;margin:4px 0 12px}
+.ai29-lesson-top b{font-size:16px}
+.ai29-phase{display:grid;grid-template-columns:36px 1fr;gap:9px;padding:11px 0;border-top:1px solid #2e4a38}
+.ai29-phase-time{font-size:12px;font-weight:850;color:#a2e8bd;padding-top:2px}
+.ai29-phase-title{font-size:12px;font-weight:800;color:#f1f8f3}
+.ai29-phase-description{font-size:11px;line-height:1.5;color:#b4c4b6;margin-top:4px;white-space:pre-wrap}
+.ai29-session-footer{margin-top:12px;border-top:1px solid #31513c;padding-top:12px}
+.ai29-feedback-label{font-size:11px;color:#cfdfd1;font-weight:750;margin-bottom:9px}
+.ai29-feedback{display:grid;grid-template-columns:repeat(3,1fr);gap:6px}
+.ai29-feedback button{min-height:42px;border:1px solid #42634c;border-radius:11px;background:#15271c;color:#cdf0d6;font-size:11px;font-weight:700;padding:7px 3px}
+.ai29-feedback button.is-selected{background:#a1e8bb;color:#092819;border-color:#a1e8bb}
+.ai29-feedback-note{width:100%;resize:vertical;min-height:56px;margin:9px 0 0;background:#09180f;border:1px solid #33503c;border-radius:12px;color:#eef6ee;padding:10px;font:inherit;font-size:12px}
+.ai29-small-muted{font-size:10px;color:#a6bbaa;line-height:1.5;margin:8px 0 0}
+.ai29-session-done{border-radius:12px;background:#103323;border:1px solid #356548;color:#c3efd0;padding:10px;font-size:11px;line-height:1.5}
+.ai29-session-expand{width:100%;background:transparent;color:#b5eecb;border:1px solid #3e664b;border-radius:11px;padding:10px;font-weight:750;text-align:center;font-size:11px;margin-top:6px}
+.ai29-server-btn{border:1px solid #345c43;background:#1b3928;color:#a9ecc4;border-radius:12px;padding:9px 12px;font-size:11px;font-weight:750;margin:0 0 10px;width:100%}
+.ai29-chat{border:1px solid #2c4433;border-radius:19px;background:#111b14;padding:15px;margin-bottom:12px}
+.ai29-chat-heading{display:flex;align-items:center;gap:8px;justify-content:space-between}
+.ai29-chat-count{font-size:10px;color:#a0b7a7;font-weight:500}
+.ai29-chat-stream{display:flex;flex-direction:column;gap:9px;max-height:360px;min-height:105px;overflow:auto;overscroll-behavior:contain;margin:14px 0;padding:2px 1px 7px;scrollbar-width:thin;scrollbar-color:#315340 transparent}
+.ai29-message{max-width:96%;padding:11px 12px;border-radius:14px;border:1px solid #314739;background:#18271c;font-size:12px;color:#ebf6ed;line-height:1.55;white-space:pre-wrap;overflow-wrap:anywhere}
+.ai29-message.user{background:#29553b;border-color:#387455;align-self:flex-end;border-bottom-right-radius:4px;max-width:88%}
+.ai29-message.assistant{align-self:flex-start;border-bottom-left-radius:4px}
+.ai29-message small{display:block;font-size:9px;color:#a7b9aa;margin-top:7px}
+.ai29-empty-chat{color:#a8bbaa;font-size:12px;line-height:1.6;padding:8px 0}
+.ai29-prompts{display:flex;gap:7px;overflow-x:auto;margin-bottom:12px;padding-bottom:3px;scrollbar-width:none}
+.ai29-prompts button{white-space:nowrap;border:1px solid #3c684b;border-radius:20px;color:#b4eac4;background:#162c1e;padding:8px 10px;font-size:10px;flex:none}
+.ai29-form{display:flex;gap:7px;align-items:end}
+.ai29-form textarea{flex:1;min-width:0;resize:none;min-height:44px;max-height:115px;border-radius:12px;border:1px solid #355440;background:#0c1710;color:#edf8ef;padding:11px;line-height:1.5;font:inherit;font-size:12px}
+.ai29-form button{flex:none;min-width:45px;min-height:44px;border-radius:12px;border:0;background:#9ee7b9;color:#0a2918;font-size:19px;font-weight:900}
+.ai29-notebook{background:#111d15;border:1px solid #2e4938;border-radius:18px;padding:13px 14px;margin-bottom:13px}
+.ai29-notebook summary{cursor:pointer;list-style:none;display:flex;justify-content:space-between;align-items:center;font-size:13px;font-weight:800;color:#e7f5e9;min-height:29px}
+.ai29-notebook summary::-webkit-details-marker{display:none}
+.ai29-notebook summary:after{content:'⌄';color:#9ddcb6;transform:rotate(0);transition:transform .24s}
+.ai29-notebook[open] summary:after{transform:rotate(180deg)}
+.ai29-notebook-body{padding-top:12px}
+.ai29-notebook textarea{width:100%;min-height:72px;resize:vertical;background:#0d1911;border:1px solid #36513e;border-radius:12px;padding:10px;color:#edf8ed;font:inherit;font-size:12px}
+.ai29-notebook-controls{display:flex;justify-content:flex-end;margin:8px 0 0}
+.ai29-note{padding:11px 0;border-top:1px solid #284331;font-size:12px;line-height:1.55;white-space:pre-wrap;overflow-wrap:anywhere}
+.ai29-note-meta{display:flex;align-items:center;justify-content:space-between;color:#9db8a7;font-size:10px;margin-top:6px}
+.ai29-note-meta button{background:transparent;border:0;color:#d6a8a8;font-size:11px;padding:3px 8px}
+.ai29-dev-open{display:flex;align-items:center;justify-content:space-between;gap:8px;width:100%;margin:11px 0 13px;padding:13px 14px;background:#1b3727;border:1px solid #3e714e;border-radius:14px;color:#aff0c6;font-size:12px;font-weight:800;text-align:left}
+.ai29-dev-open span:last-child{font-size:17px}
+.ai29-scope-jump{border:1px solid #37533e;background:#182a1e;color:#c0ebcb;border-radius:10px;padding:8px 10px;font-size:10px;font-weight:700}
+.ai29-status-note{text-align:center;color:#92ab99;font-size:10px;line-height:1.5;padding:1px 10px 12px}
+.ai29-session-controls{margin-top:11px}
+@media(max-width:350px){.ai29-hero{padding:13px}.ai29-context,.ai29-session,.ai29-chat{padding:12px}.ai29-action{font-size:10px}.ai29-phase{grid-template-columns:30px 1fr;gap:8px}.ai29-summary-mini small{font-size:8px}}
+@media(prefers-reduced-motion:reduce){.ai29-screen{animation:none}.ai29-notebook summary:after{transition:none}}
+
+.ai29-collapsed-line{display:flex;flex-direction:column;gap:5px;padding:12px;border:1px solid #34513d;border-radius:12px;background:#102519;margin:0 0 5px}
+.ai29-collapsed-line strong{font-size:12px;color:#edf8ef}
+.ai29-collapsed-line span{font-size:10px;color:#b4c8b8}
+.ai29-session-expand.is-prominent{background:#a1ebbd;color:#0b291a;border-color:#a1ebbd}
 </style>
 </head>
 <body>
@@ -603,7 +823,7 @@ textarea.dev-input{resize:vertical;min-height:95px}
 <section class="screen" id="assistant">
  <h1 class="page-title section-main-title">ИИ-помощник</h1>
  <div id="devPlannerMount"></div>
- <div class="card"><div class="ai-title"><div class="spark">✦</div><div><div class="cardtitle">SkillUp AI</div><div class="muted" style="font-size:11px">На связи · демо-режим</div></div></div><label class="muted" for="chatTopic" style="display:block;font-size:11px;margin-top:14px">Тема диалога</label><select id="chatTopic" onchange="switchTopic(this.value)" style="width:100%;margin-top:6px;border:1px solid #304036;background:#0e1510;color:white;border-radius:12px;padding:11px"><option value="general">Общее развитие</option><option value="english">Навык: Английский</option><option value="finance">Финансы</option><option value="discipline">Дисциплина и привычки</option><option value="health">Эмоциональное здоровье</option></select><div id="financeQuick" class="hidden" style="margin-top:12px"><div class="rowtitle">Быстрая запись финансов</div><div style="display:flex;gap:7px;margin-top:8px"><input id="financeAmount" type="number" placeholder="Сумма ₽" style="width:35%;min-width:0;border-radius:11px;border:1px solid #304036;background:#0e1510;color:white;padding:10px"><select id="financeType" style="flex:1;min-width:0;border-radius:11px;border:1px solid #304036;background:#0e1510;color:white;padding:10px"><option value="Расход">Расход</option><option value="Доход">Доход</option></select><button class="secondary" onclick="addFinanceEntry()">＋</button></div><div class="muted" style="font-size:10px;margin-top:6px">Можно написать сумму и описание в чат или использовать голосовой ввод.</div></div><div class="chatbox" id="chat"><div class="bubble ai">Привет! Я помогу тебе двигаться к целям без перегруза. Что хочешь улучшить в первую очередь?</div></div><div class="suggestions"><button class="suggestion" onclick="sendPrompt('Составь план на неделю')">План на неделю</button><button class="suggestion" onclick="sendPrompt('Почему я теряю мотивацию?')">Не хватает мотивации</button><button class="suggestion" onclick="sendPrompt('Как улучшить английский?')">Улучшить английский</button></div><form class="chatinput" onsubmit="submitChat(event)"><input id="chatInput" placeholder="Напиши свой вопрос..." autocomplete="off"><button type="button" onclick="voiceInput()" aria-label="Голосовой ввод">🎙</button><button type="submit">↑</button></form></div><p class="muted" style="font-size:10px;text-align:center">Ответы заранее подготовлены для демонстрации идеи.</p>
+ <div id="ai29Root"></div>
 </section>
 <section class="screen" id="finance">
  <h1 class="page-title section-main-title">Финансы</h1>
@@ -656,7 +876,12 @@ function markAllRead(){notifications.forEach(n=>n.read=true);openNotifications()
 function toggleAiTip(){const tip=document.getElementById('aiTip');tip.style.display=tip.style.display==='none'?'block':'none'}
 function hideAiTip(){document.getElementById('aiTip').style.display='none'}
 function discussTip(){const advice=document.getElementById('aiTipText').textContent;hideAiTip();go('assistant');switchTopic('general');sendPrompt('Обсудить совет: '+advice)}
-function switchTopic(topic){const q=document.getElementById('chatTopic');if(q&&q.value!==topic)q.value=topic;const fq=document.getElementById('financeQuick');if(fq)fq.classList.toggle('hidden',topic!=='finance');const names={general:'Общее развитие',english:'Английский',finance:'Финансы',discipline:'Дисциплина и привычки',health:'Эмоциональное здоровье'};if(topic!=='general')toast('Открыта тема: '+names[topic])}
+function switchTopic(topic){
+ if(topic==='general')return ai29SelectContext('general');
+ if(topic==='finance'){go('finance');return;}
+ const area=devState?.areas?.find(a=>a.id===topic||a.name.toLowerCase().includes(topic));
+ ai29SelectContext(area?'area:'+area.id:'general');
+}
 function addFinanceEntry(){const amount=Number(document.getElementById('financeAmount').value);const type=document.getElementById('financeType').value;if(!amount||amount<=0){toast('Укажи сумму');return}const text=(type==='Расход'?'Запиши расход ':'Запиши доход ')+amount+' рублей';sendPrompt(text);document.getElementById('financeAmount').value=''}
 let financeBalanceValue=42500, financeIncomeValue=65000, financeExpenseValue=22500, financeGoal=null, financePeriod='month';
 function rub(n){return Math.round(n).toLocaleString('ru-RU')+' ₽'}
@@ -1417,7 +1642,7 @@ function animatePremiumTab(id){
  });
 }
 
-function go(id){if(id==='plans')id='development';if(id==='finance'){renderExpenseChart();renderFinanceAdvice();}document.querySelectorAll('.screen').forEach(x=>x.classList.toggle('active',x.id===id));document.querySelectorAll('.navbtn').forEach(x=>x.classList.toggle('active',x.dataset.screen===id));const fab=document.getElementById('aiFab');const tip=document.getElementById('aiTip');fab.style.display=(id==='assistant'||id==='finance'||id==='development')?'none':'flex';fab.classList.toggle('compact',id==='home');if(id!=='home')tip.style.display='none';window.scrollTo({top:0,behavior:'smooth'});if(id==='development')devRender();if(id==='profile')renderProfileAreas();requestAnimationFrame(()=>animatePremiumTab(id))}
+function go(id){if(id==='plans')id='development';if(id==='finance'){renderExpenseChart();renderFinanceAdvice();}document.querySelectorAll('.screen').forEach(x=>x.classList.toggle('active',x.id===id));document.querySelectorAll('.navbtn').forEach(x=>x.classList.toggle('active',x.dataset.screen===id));const fab=document.getElementById('aiFab');const tip=document.getElementById('aiTip');fab.style.display=(id==='assistant'||id==='finance'||id==='development')?'none':'flex';fab.classList.toggle('compact',id==='home');if(id!=='home')tip.style.display='none';window.scrollTo({top:0,behavior:'smooth'});if(id==='development')devRender();if(id==='profile')renderProfileAreas();if(id==='assistant'){devRenderPlanner();ai29Render();}requestAnimationFrame(()=>animatePremiumTab(id))}
 function toggleTask(el){const i=Number(el.dataset.task);if(completed.has(i)){completed.delete(i);el.classList.remove('done');el.querySelector('.check').textContent=''}else{completed.add(i);el.classList.add('done');el.querySelector('.check').textContent='✓'}updateTaskCount();renderPlanTasks();if(completed.has(i))toast('Отлично! Ещё один шаг сделан ✨')}
 function updateTaskCount(){const t=[...completed].length;document.getElementById('taskCount').textContent=`${t} из 3`;document.getElementById('planTaskCount').textContent=`${t}/3 выполнено`}
 function renderPlanTasks(){const el=document.getElementById('planTasks');el.innerHTML=taskData.map((t,i)=>`<div class="task ${completed.has(i)?'done':''}" data-task="${i}" onclick="toggleTask(this)"><button class="check">${completed.has(i)?'✓':''}</button><div class="tasktext"><div class="taskname">${t[0]}</div><div class="taskmeta">${t[1]}</div></div><span class="tasktime">${t[2]}</span></div>`).join('')}
@@ -1427,10 +1652,10 @@ function addArea(id){if(!activeAreas.includes(id))activeAreas.push(id);renderAre
 function renderAreas(){const grid=document.getElementById('areaGrid');if(!grid)return;grid.innerHTML=activeAreas.map(k=>{const a=areaData[k];return `<button class="area" onclick="openArea('${k}')"><div class="area-top"><span class="area-icon">${a.icon}</span><span class="area-arrow">↗</span></div><div class="area-name">${a.name}</div><div class="area-foot"><span>${a.desc}</span><b style="color:var(--mint)">${a.percent}%</b></div><div class="mini-bar"><i style="width:${a.percent}%"></i></div></button>`}).join('')}
 function renderProfileAreas(){const el=document.getElementById('profileAreas');el.innerHTML=activeAreas.map(k=>{const a=areaData[k];return `<div class="profile-row"><div class="area-icon">${a.icon}</div><div class="grow"><div class="rowtitle">${a.name}</div><div class="rowdesc">${a.desc}</div></div><button class="textbtn" onclick="removeArea('${k}')">Убрать</button></div>`}).join('')}
 function removeArea(k){activeAreas=activeAreas.filter(x=>x!==k);renderAreas();renderProfileAreas();toast('Направление скрыто')}
-const replies=[['план','Предлагаю начать с трёх реалистичных шагов в день. Выдели 15 минут на главный навык, 5 минут на учёт прогресса и оставь время на отдых. План должен помогать тебе, а не перегружать.'],['мотивац','Мотивация меняется — это нормально. Снизь порог входа: выбери действие на 5 минут и привяжи его к привычному моменту дня. Важнее вернуться к цели, чем никогда не пропускать.'],['англий','Для прогресса в английском попробуй цикл на 15 минут: 5 минут повторения слов, 5 минут короткого текста и 5 минут практики фраз. Через неделю оцени, что запомнилось, и скорректируй нагрузку.'],['default','Давай превратим это в небольшой план. Выбери одну цель, определи минимальный шаг на 10–15 минут и попробуй выполнить его сегодня. После этого оцени, насколько план был реалистичным.']];
-function sendPrompt(s){document.getElementById('chatInput').value=s;sendChat(s)}
-function submitChat(e){e.preventDefault();const inp=document.getElementById('chatInput');const s=inp.value.trim();if(s)sendChat(s)}
-function sendChat(s){const chat=document.getElementById('chat');chat.insertAdjacentHTML('beforeend',`<div class="bubble user">${escapeHtml(s)}</div>`);document.getElementById('chatInput').value='';const q=s.toLowerCase();const found=replies.find(x=>x[0]!=='default'&&q.includes(x[0]));const answer=(found||replies[3])[1];setTimeout(()=>{chat.insertAdjacentHTML('beforeend',`<div class="bubble ai">${answer}</div>`);chat.scrollIntoView({behavior:'smooth',block:'end'})},350);chat.scrollIntoView({behavior:'smooth',block:'end'})}
+/* The AI workspace defined below owns conversations. Legacy links enter its general scope. */
+function sendPrompt(s){ai29OpenPrompt(s)}
+function submitChat(e){e.preventDefault();ai29SubmitChat()}
+function sendChat(s){ai29Send(s)}
 function escapeHtml(s){return s.replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]))}
 function showModal(){document.getElementById('modalback').classList.add('show')}
 function closeModal(){stopFinanceVoiceRecognition();document.getElementById('modalback').classList.remove('show','notifications-back')}
@@ -1663,14 +1888,14 @@ function demoPreviewPack(id){
  const done=preview.items.reduce((sum,item)=>sum+item.steps.filter(step=>step.done).length,0);
  const counts=['goal','skill','habit'].map(kind=>preview.items.filter(item=>item.kind===kind).length);
  const breakdown=`${counts[0]} целей · ${counts[1]} навыков · ${counts[2]} привычек`;
- document.getElementById('modalcontent').innerHTML=`<div class="eyebrow">ДЕМО · ${preset.title.toUpperCase()}</div><h3>${preset.icon} ${preset.title}</h3><p>${preset.desc}</p><div class="demo-preview-summary"><strong>Что загрузится</strong><p>${preview.areas.length} направлений · ${breakdown} · ${done} из ${steps} этапов пройдено.</p><p><b>Финансы:</b> доходы ${rub(finance.income)}/мес. · расходы ${rub(finance.expense)}/мес. · баланс ${rub(finance.balance)}. Добавятся накопления и операции за 12 месяцев.</p></div><div class="demo-warning">Будут <b>заменены</b> текущие цели, привычки, накопления, финансовые операции и предыдущий анализ. Твои собственные записи тоже заменятся. Это нельзя отменить.</div><div class="demo-preview-actions"><button type="button" class="secondary" onclick="demoOpenPicker()">← Назад</button><button type="button" class="primary" onclick="demoApplyPack()">Загрузить этот вариант</button></div>`;
+ document.getElementById('modalcontent').innerHTML=`<div class="eyebrow">ДЕМО · ${preset.title.toUpperCase()}</div><h3>${preset.icon} ${preset.title}</h3><p>${preset.desc}</p><div class="demo-preview-summary"><strong>Что загрузится</strong><p>${preview.areas.length} направлений · ${breakdown} · ${done} из ${steps} этапов пройдено.</p><p><b>Финансы:</b> доходы ${rub(finance.income)}/мес. · расходы ${rub(finance.expense)}/мес. · баланс ${rub(finance.balance)}. Добавятся накопления и операции за 12 месяцев.</p></div><div class="demo-warning">Будут <b>заменены</b> текущие цели, привычки, накопления, финансовые операции и предыдущий анализ, а также локальные чаты и заметки ИИ. Твои собственные записи тоже заменятся. Это нельзя отменить.</div><div class="demo-preview-actions"><button type="button" class="secondary" onclick="demoOpenPicker()">← Назад</button><button type="button" class="primary" onclick="demoApplyPack()">Загрузить этот вариант</button></div>`;
 }
 function demoApplyPack(){
  if(!demoSelectedPack)return;
  const pack=devCreateDemoPack(demoSelectedPack);if(!pack)return;
  // All linked demo datasets are saved before touching live UI state.
  // Revert localStorage changes if a browser quota/permission error occurs midway.
- const keys=[DEV_STORAGE_KEY,FINANCE_DEMO_PACK_KEY,FINANCE_DEMO_GOAL_KEY,financeStorageKey,FINANCE_ANALYSIS_KEY,FINANCE_ADVICE_COLLAPSED_KEY];
+ const keys=[DEV_STORAGE_KEY,FINANCE_DEMO_PACK_KEY,FINANCE_DEMO_GOAL_KEY,financeStorageKey,FINANCE_ANALYSIS_KEY,FINANCE_ADVICE_COLLAPSED_KEY,AI29_STORAGE_KEY];
  const previous={};
  try{
   keys.forEach(k=>previous[k]=localStorage.getItem(k));
@@ -1680,12 +1905,14 @@ function demoApplyPack(){
   localStorage.setItem(financeStorageKey,'[]');
   localStorage.removeItem(FINANCE_ANALYSIS_KEY);
   localStorage.setItem(FINANCE_ADVICE_COLLAPSED_KEY,'false');
+  localStorage.removeItem(AI29_STORAGE_KEY);
  }catch(err){
   for(const k of keys){try{if(previous[k]===null||previous[k]===undefined)localStorage.removeItem(k);else localStorage.setItem(k,previous[k])}catch(e){}}
   toast('Не удалось сохранить демо. Проверь настройки хранения.');return;
  }
+ ai29State={version:1,active:'general',chats:{},notes:{},sessions:{},lessons:{}};
  devHomeHistory=[];try{localStorage.removeItem(DEV_HOME_HISTORY_KEY)}catch(e){}
- devHomeOpenItemId=null;Object.keys(devHomeCarouselPos).forEach(k=>delete devHomeCarouselPos[k]);
+ devHomeOpenItemId=null;devHomeFlippedId=null;Object.keys(devHomeCarouselPos).forEach(k=>delete devHomeCarouselPos[k]);
  devState=pack;devView={level:'overview',areaId:null,itemId:null};devShowAllActions=false;devShowAllStages=false;
  financeApplyDemoPack(demoSelectedPack);
  selectFinancePeriod('month');
@@ -1709,12 +1936,22 @@ function devIsFinished(item){return item.kind!=='habit'&&item.steps.length>0&&it
 function devPercent(item){if(item.kind==='habit'){const z=devWeekStats(item);return z.planned>0?Math.round(z.done/z.planned*100):0;}return item.steps.length?Math.round(item.steps.filter(s=>s.done).length/item.steps.length*100):0}
 function devAreaPercent(areaId){const items=devInArea(areaId);return items.length?Math.round(items.reduce((a,i)=>a+devPercent(i),0)/items.length):0}
 function devActiveItems(){return devState.items.filter(i=>!i.paused&&!devIsFinished(i))}
-function devIsDue(item,date){if(!item.action||item.freq==='none'||devIsFinished(item)||(item.startedAt&&devDateKey(date)<item.startedAt))return false;
- const day=date.getDay();return item.freq==='daily'||(item.freq==='weekdays'&&day!==0&&day!==6)||(item.freq==='weekends'&&(day===0||day===6))||(item.freq==='weekly'&&day===Number(item.weekday));}
-function devFreqLabel(item){return ({daily:'Каждый день',weekdays:'По будням',weekends:'По выходным',weekly:'Раз в неделю',none:'Без повторений'})[item.freq]||'Каждый день'}
+function v26DaysFor(item){
+ if(Array.isArray(item.days))return [...new Set(item.days.map(Number).filter(n=>Number.isInteger(n)&&n>=0&&n<=6))];
+ switch(item.freq){case 'daily':return [1,2,3,4,5,6,0];case 'weekdays':return [1,2,3,4,5];case 'weekends':return [6,0];case 'weekly':return [Number(item.weekday??1)];default:return [];}
+}
+function v26IsScheduled(item,date){return v26DaysFor(item).includes(date.getDay());}
+function devIsDue(item,date){if(!item.action||devIsFinished(item)||(item.startedAt&&devDateKey(date)<item.startedAt))return false;return v26IsScheduled(item,date);}
+function devFreqLabel(item){
+ const days=v26DaysFor(item);if(!days.length)return 'Без повторений';
+ if(days.length===7)return 'Каждый день';
+ if(days.join(',')==='1,2,3,4,5'||([1,2,3,4,5].every(n=>days.includes(n))&&days.length===5))return 'По будням';
+ if(days.length===2&&days.includes(6)&&days.includes(0))return 'По выходным';
+ const labels=['Вс','Пн','Вт','Ср','Чт','Пт','Сб'];return [1,2,3,4,5,6,0].filter(n=>days.includes(n)).map(n=>labels[n]).join(', ');
+}
 function devWeekStats(item){let d=devWeekStart(),nowKey=devDateKey();let done=0,planned=0;
  for(let k=0;k<7;k++){const date=new Date(d);date.setDate(d.getDate()+k);const key=devDateKey(date);
- if(key>nowKey)continue;if(devIsDue(item,date)){planned++;if(item.completed?.[key])done++}}
+  if(key>nowKey)continue;const actions=devHomeDueActions(item,date);planned+=actions.length;done+=actions.filter(a=>a.completed).length;}
  return {done,planned};}
 function devDashText(num){return String(num).padStart(2,'0')}
 function devEsc(s){return escapeHtml(String(s??''))}
@@ -1749,8 +1986,9 @@ function devWeekstrip(i){const start=devWeekStart(),current=devDateKey();const l
 function devItemHtml(i){const progress=devPercent(i);const next=devNextStep(i);const area=devArea(i.areaId);const finished=devIsFinished(i);
  const stepHtml=i.kind==='habit'?`<div class="card"><div class="cardhead"><span class="cardtitle">Текущая неделя</span><span class="pill">${devWeekStats(i).done}/${devWeekStats(i).planned} выполнено</span></div>${devWeekstrip(i)}<p class="dev-small-note">Отмечай выполнение привычки на Главной. Здесь видно, как ты держишь ритм.</p></div>`:`<div class="dev-section-heading"><h2>Твой маршрут</h2><span class="pill">${i.steps.filter(s=>s.done).length}/${i.steps.length}</span></div><div class="card dev-roadmap">${i.steps.length?i.steps.map((s,idx)=>`<div class="dev-roadmap-line ${s.done?'is-done':''} ${next===s?'is-next':''}"><div class="dev-roadmark">${s.done?'✓':idx+1}</div><div><div class="dev-roadmap-text">${devEsc(s.title)}</div><div class="dev-roadmap-meta">${s.done?'Уже пройдено':next===s?'Следующий этап':'Впереди'}</div></div></div>`).join(''):'<div class="dev-empty">Пока нет этапов. Добавь их через «Настроить».</div>'}</div>`;
  return `${devBackControl(area?.name||'Развитие',`devOpenArea('${i.areaId}')`)}<div class="dev-entry"><span class="dev-type">${devKindName(i.kind)}</span>${i.paused?'<span class="dev-paused" style="margin-left:8px">На паузе</span>':''}<h1 class="dev-detail-title">${devEsc(i.title)}</h1><p class="dev-detail-sub">${devEsc(i.description||'Здесь твой персональный план и видимый прогресс.')}</p></div>
+ <button type="button" class="ai29-dev-open" onclick="ai29OpenItem('${i.id}')"><span>✦ Обсудить ${i.kind==='goal'?'цель':i.kind==='skill'?'навык':'привычку'} с ИИ</span><span aria-hidden="true">↗</span></button>
  <div class="card dev-lead dev-entry"><div class="cardhead"><span class="cardtitle">Твой прогресс</span><b style="font-size:22px;color:var(--mint)">${progress}%</b></div><div class="dev-progress-track"><div class="dev-progress-fill" style="width:${progress}%"></div></div><p class="dev-small-note">${i.kind==='habit'?'Отметки за дни текущей недели':'Пройденные этапы от общего плана'}</p>
- ${i.action?`<div class="dev-next-step"><div class="dev-next-eyebrow">Регулярное действие</div><div class="dev-next-text">${devEsc(i.action)}</div><div class="dev-next-caption">${devFreqLabel(i)}${i.time?' · '+devEsc(i.time):''}</div></div>`:''}
+ ${v25Actions(i).length?`<div class="dev-next-step"><div class="dev-next-eyebrow">Регулярные действия · ${v25Actions(i).length}</div>${v25Actions(i).map(a=>`<div class="dev-next-text" style="margin:7px 0">${devEsc(a.title)} <span class="dev-next-caption">· ${devEsc(devFreqLabel(a))}</span></div>`).join('')}</div>`:''}
  ${i.kind!=='habit'&&next?`<div class="dev-next-step"><div class="dev-next-eyebrow">Что впереди</div><div class="dev-next-text">${devEsc(next.title)}</div><div class="dev-next-caption">Отметить достижение можно на Главной</div></div>`:''}
  ${finished?'<div class="dev-next-step">Все этапы завершены. Можно создать новый путь или обновить текущий.</div>':''}</div>
  ${stepHtml}<div class="dev-detail-actions"><button class="primary" onclick="devOpenEditItem('${i.id}')">✎ Настроить план</button><button class="secondary" onclick="go('home')">На Главную →</button></div>`;}
@@ -1826,30 +2064,36 @@ function devSaveSuggestedPlan(){const p=devPendingPlan;if(!p||!devArea(p.areaId)
  if(!steps.length)return toast('Добавь хотя бы один этап');const action=document.getElementById('devPlannerAction').value.trim();const freq=document.getElementById('devPlannerFreq').value;if(freq!=='none'&&!action)return toast('Укажи небольшое регулярное действие');
  const item={id:devUid(),areaId:p.areaId,kind:p.kind,title:p.title,description:'',paused:false,action,freq,weekday:Number(document.getElementById('devPlannerWeekday').value),time:document.getElementById('devPlannerTime').value,steps:steps.map(title=>({id:devUid(),title,done:false})),completed:{}};
  devState.items.push(item);devPersist();devPendingPlan=null;devRenderPlanner();devView={level:'item',areaId:item.areaId,itemId:item.id};go('development');devRenderHome();toast('План добавлен — начни с первого шага');}
-function devOpenEditItem(id=null,areaId=null,kind='goal'){const old=id?devItem(id):null;const curArea=old?.areaId||areaId||devState.areas[0]?.id;
- if(!curArea)return toast('Сначала создай направление');const typ=old?.kind||kind;
- const blocks=typ==='habit'?'':`<label for="devItemSteps">Этапы достижения</label><textarea id="devItemSteps" class="dev-input" rows="5" placeholder="Один этап в строке">${devEsc(old?.steps.map(s=>s.title).join('\n')||'')}</textarea><div class="dev-form-note">Каждый этап становится отдельным шагом. Отмечать достижение можно на Главной.</div>${old?.steps.length?`<div class="dev-form-note" style="margin-top:13px;font-weight:750">Исправление отметок о пройденных этапах</div>${old.steps.map(s=>`<div class="dev-stage-edit"><input type="checkbox" id="devStepCheck_${s.id}" ${s.done?'checked':''} onchange="devCorrectStep('${old.id}','${s.id}',this.checked)"><label for="devStepCheck_${s.id}">${devEsc(s.title)}</label></div>`).join('')}`:''}`;
- document.getElementById('modalcontent').innerHTML=`<div class="eyebrow">${old?'НАСТРОЙКА ПЛАНА':'НОВОЕ РАЗВИТИЕ'}</div><h3>${old?'Изменить':'Создать'} ${devKindName(typ).toLowerCase()}</h3><p>Здесь настрой путь. На Главной будешь отмечать выполнение.</p>
- <form class="dev-modal-form" onsubmit="devSaveItem(event,${old?`'${old.id}'`:'null'},'${typ}')">
- <label for="devItemName">Название</label><input class="dev-input" id="devItemName" required maxlength="85" value="${devEsc(old?.title||'')}" placeholder="Что хочешь улучшить?">
- <label for="devItemArea">Направление</label><select class="dev-input" id="devItemArea">${devState.areas.map(a=>`<option value="${a.id}" ${a.id===curArea?'selected':''}>${devEsc(a.name)}</option>`).join('')}</select>
- <label for="devItemDesc">Зачем это важно (необязательно)</label><input class="dev-input" id="devItemDesc" maxlength="150" placeholder="Короткое описание" value="${devEsc(old?.description||'')}">
- ${blocks}
- <label for="devActionName">Действие для Главной</label><input class="dev-input" id="devActionName" maxlength="90" value="${devEsc(old?.action||'')}" placeholder="Например, 15 минут практики" ${typ==='habit'?'required':''}>
- <div class="dev-form-grid"><div><label for="devFreq">Повторять</label><select class="dev-input" id="devFreq"><option value="daily">Каждый день</option><option value="weekdays">По будням</option><option value="weekends">По выходным</option><option value="weekly">Раз в неделю</option><option value="none">Не повторять</option></select></div>
- <div><label for="devActionTime">Время</label><input class="dev-input" type="time" id="devActionTime" value="${devEsc(old?.time||'19:00')}"></div></div>
- <div id="devWeekdayRow" style="display:none"><label for="devWeekday">День недели</label><select class="dev-input" id="devWeekday">${[['1','Понедельник'],['2','Вторник'],['3','Среда'],['4','Четверг'],['5','Пятница'],['6','Суббота'],['0','Воскресенье']].map(([k,v])=>`<option value="${k}" ${Number(old?.weekday??1)===Number(k)?'selected':''}>${v}</option>`).join('')}</select></div>
- <button class="primary" type="submit">${old?'Сохранить план':'Создать'}</button>
- </form>${old?`<div class="dev-edit-actions"><button class="secondary" onclick="devTogglePause('${old.id}')">${old.paused?'▶ Возобновить':'Ⅱ Поставить на паузу'}</button></div><button class="dev-soft-danger" onclick="devDeleteItem('${old.id}')">Удалить ${devKindName(typ).toLowerCase()}</button>`:''}`;
- document.getElementById('devFreq').value=old?.freq||'daily';document.getElementById('devFreq').addEventListener('change',devUpdateFreq);devUpdateFreq();showModal();}
-function devUpdateFreq(){const freq=document.getElementById('devFreq')?.value;const target=document.getElementById('devWeekdayRow');if(target)target.style.display=freq==='weekly'?'block':'none';}
-function devSaveItem(ev,id,kind){ev.preventDefault();const name=document.getElementById('devItemName').value.trim();const areaId=document.getElementById('devItemArea').value;
- const action=document.getElementById('devActionName').value.trim();if(!name||!devArea(areaId))return toast('Проверь название и направление');if(kind==='habit'&&!action)return toast('Для привычки нужно действие');
- let item=id?devItem(id):null;if(!item){item={id:devUid(),kind,steps:[],completed:{},paused:false};devState.items.push(item)}
- const raw=kind==='habit'?[]:(document.getElementById('devItemSteps')?.value||'').split(/\r?\n/).map(s=>s.trim()).filter(Boolean).slice(0,35);
- const oldSteps=item.steps||[];const used=new Set();item.steps=raw.map((s,i)=>{let was=oldSteps.find(o=>o.title===s&&!used.has(o.id));if(!was&&oldSteps[i]&&!used.has(oldSteps[i].id)&&!raw.includes(oldSteps[i].title))was=oldSteps[i];if(was){used.add(was.id);return {...was,title:s}}return {id:devUid(),title:s,done:false}});
- item.title=name;item.areaId=areaId;item.description=document.getElementById('devItemDesc').value.trim();item.action=action;item.freq=document.getElementById('devFreq').value;item.time=document.getElementById('devActionTime').value;item.weekday=Number(document.getElementById('devWeekday').value);if(kind==='habit'&&item.freq==='none')item.freq='daily';
- devPersist();devView={level:'item',areaId,itemId:item.id};closeModal();devRender();devRenderHome();toast('План сохранён')}
+function v25Actions(item){if(Array.isArray(item.actions)&&item.actions.length)return item.actions;return item.action?[{id:'primary',title:item.action,freq:item.freq||'daily',time:item.time||'19:00',weekday:item.weekday??1}]:[];}
+function v25NewStage(title='',id=''){const container=document.getElementById('v25Stages');if(!container||container.children.length>=35)return;const row=document.createElement('div');row.className='v25-row';row.dataset.stageId=id;row.innerHTML=`<input class="dev-input v25-stage-title" maxlength="160" placeholder="Например, пробежать 3 км" value="${devEsc(title)}"><button type="button" class="v25-remove" aria-label="Удалить этап" onclick="this.parentElement.remove()">✕</button>`;container.appendChild(row);}
+function v26ToggleDay(button){const pressed=button.getAttribute('aria-pressed')==='true';button.setAttribute('aria-pressed',String(!pressed));}
+function v25NewAction(data={}){
+ const container=document.getElementById('v25Actions');if(!container||container.children.length>=12)return;
+ const row=document.createElement('div');row.className='v25-action';row.dataset.actionId=data.id||devUid();
+ const selected=v26DaysFor(data.days!==undefined?data:(!data.freq?{freq:'daily'}:data));
+ const labels=[['Пн',1],['Вт',2],['Ср',3],['Чт',4],['Пт',5],['Сб',6],['Вс',0]];
+ row.innerHTML=`<div class="v25-action-top"><input class="dev-input v25-action-title" maxlength="100" placeholder="Например, пробежка 20 минут" value="${devEsc(data.title||'')}"><button type="button" class="v25-remove" aria-label="Удалить регулярное действие" onclick="this.closest('.v25-action').remove()">✕</button></div>
+ <div class="v26-week-label">Дни выполнения</div><div class="v26-day-picker" role="group" aria-label="Дни выполнения действия">${labels.map(([label,n])=>`<button class="v26-day-btn" type="button" data-day="${n}" aria-pressed="${selected.includes(n)}" onclick="v26ToggleDay(this)">${label}</button>`).join('')}</div>
+ <div class="v25-action-grid" style="grid-template-columns:1fr"><div><label>Время</label><input type="time" class="dev-input v25-action-time" value="${devEsc(data.time||'19:00')}"></div></div>`;
+ container.appendChild(row);
+}
+function devOpenEditItem(id=null,areaId=null,kind='goal'){const old=id?devItem(id):null;const curArea=old?.areaId||areaId||devState.areas[0]?.id;if(!curArea)return toast('Сначала создай направление');const typ=old?.kind||kind;const hasSteps=typ!=='habit';
+ document.getElementById('modalcontent').innerHTML=`<div class="eyebrow">НАСТРОЙКА РАЗВИТИЯ</div><h3>${old?'Изменить':'Создать'} ${devKindName(typ).toLowerCase()}</h3><p>Укажи самое главное. Детали всегда можно дополнить позже.</p><form class="dev-modal-form" onsubmit="devSaveItem(event,${old?`'${old.id}'`:'null'},'${typ}')">
+ <label for="devItemName">Название ${devKindName(typ).toLowerCase()}</label><input class="dev-input" id="devItemName" required maxlength="85" value="${devEsc(old?.title||'')}" placeholder="Например, пробежать 10 км">
+ <details class="v25-details"><summary>Направление и описание · необязательно</summary><label for="devItemArea">Направление</label><select class="dev-input" id="devItemArea">${devState.areas.map(a=>`<option value="${a.id}" ${a.id===curArea?'selected':''}>${devEsc(a.name)}</option>`).join('')}</select><label for="devItemDesc">Общее описание цели</label><textarea class="dev-input" id="devItemDesc" rows="2" maxlength="600" placeholder="Зачем эта цель и каким хочешь видеть результат">${devEsc(old?.description||'')}</textarea></details>
+ ${hasSteps?`<section class="v25-panel"><div class="v25-panel-head"><h4>Этапы достижения</h4></div><p class="v25-hint">Разовые результаты, к которым идёшь. Заполняй по одному; можно оставить пустым и дополнить позже.</p><div id="v25Stages"></div><button class="v25-add" type="button" onclick="v25NewStage()">＋ Добавить этап</button></section>`:''}
+ <section class="v25-panel"><div class="v25-panel-head"><h4>Регулярные действия</h4></div><p class="v25-hint">То, что повторяешь по расписанию и отмечаешь на Главной. Можно добавить несколько.</p><div id="v25Actions"></div><button class="v25-add" type="button" onclick="v25NewAction()">＋ Добавить действие</button></section>
+ <button class="primary" type="submit">${old?'Сохранить изменения':'Создать'}</button></form>${old?`<div class="dev-edit-actions"><button class="secondary" onclick="devTogglePause('${old.id}')">${old.paused?'▶ Возобновить':'Ⅱ Поставить на паузу'}</button></div><button class="dev-soft-danger" onclick="devDeleteItem('${old.id}')">Удалить ${devKindName(typ).toLowerCase()}</button>`:''}`;
+ if(hasSteps) (old?.steps||[]).forEach(step=>v25NewStage(step.title,step.id));v25Actions(old||{}).forEach(action=>v25NewAction(action));showModal();}
+function devSaveItem(ev,id,kind){ev.preventDefault();const name=document.getElementById('devItemName').value.trim();const areaId=document.getElementById('devItemArea').value;if(!name||!devArea(areaId))return toast('Укажи название и направление');const existing=id?devItem(id):null;
+ const rawSteps=[...document.querySelectorAll('#v25Stages .v25-row')].map(row=>({id:row.dataset.stageId,title:row.querySelector('input').value.trim()})).filter(v=>v.title);
+ const actionRows=[...document.querySelectorAll('#v25Actions .v25-action')].map(row=>({id:row.dataset.actionId,title:row.querySelector('.v25-action-title').value.trim(),freq:'custom',days:[...row.querySelectorAll('.v26-day-btn[aria-pressed="true"]')].map(b=>Number(b.dataset.day)),time:row.querySelector('.v25-action-time').value})).filter(v=>v.title);
+ if(actionRows.some(a=>a.days.length===0))return toast('Выбери хотя бы один день для каждого действия');
+ if(kind==='habit'&&!actionRows.length)return toast('Для привычки добавь хотя бы одно действие');
+ let item=existing;if(!item){item={id:devUid(),kind,steps:[],completed:{},paused:false};devState.items.push(item)}
+ const oldSteps=item.steps||[];item.steps=kind==='habit'?[]:rawSteps.map(x=>{const old=oldSteps.find(st=>st.id===x.id);return old?{...old,title:x.title}:{id:devUid(),title:x.title,done:false}});
+ item.title=name;item.areaId=areaId;item.description=document.getElementById('devItemDesc').value.trim();item.actions=actionRows;const first=actionRows[0];item.action=first?.title||'';item.freq=first?.freq||'none';item.time=first?.time||'19:00';item.weekday=first?.weekday??1;item.days=first?.days||[];
+ if(kind==='habit'&&item.freq==='none')item.freq='daily';devPersist();devView={level:'item',areaId,itemId:item.id};closeModal();devRender();devRenderHome();toast('План сохранён')}
 function devCorrectStep(itemId,stepId,done){const item=devItem(itemId),step=item?.steps.find(s=>s.id===stepId);if(!step)return;step.done=done;if(done)step.completedAt=devDateKey();else delete step.completedAt;devPersist();devRenderHome();toast(done?'Этап отмечен':'Отметка исправлена');}
 function devTogglePause(id){const item=devItem(id);if(!item)return;item.paused=!item.paused;devPersist();closeModal();devRender();devRenderHome();toast(item.paused?'План приостановлен':'План активен')}
 function devConfirmDeleteItem(id){
@@ -1866,6 +2110,11 @@ function devCompleteStep(itemId,stepId){const item=devItem(itemId);const next=it
 /* v22 — Home: real progress indicators, horizontal square goal cards, detailed checklist and local reminders. */
 let devHomeOpenItemId=null,devHomePeriodDays=7,devHomeHasRendered=false,devHomeDetailsExpanded=false;
 const devHomeCarouselPos={};
+/* Flipped tile and the selected action survive a progress update and a trip to details. */
+let devHomeTodayExpanded=false;
+let devHomeFlippedId=null;
+const devHomeTodayActionIndex={};
+
 const DEV_REMINDER_LAST_KEY='skillup-v22-reminder-seen';
 const DEV_HOME_HISTORY_KEY='skillup-v22-progress-history';
 let devHomeHistory=[];
@@ -1873,10 +2122,10 @@ try{const saved=JSON.parse(localStorage.getItem(DEV_HOME_HISTORY_KEY)||'[]');if(
 let devHomeReminderSeen=new Set();
 try{devHomeReminderSeen=new Set(JSON.parse(sessionStorage.getItem(DEV_REMINDER_LAST_KEY)||'[]'))}catch(e){}
 function devHomeDateAtOffset(delta){return devLocalDateOffset(delta)}
-function devHomeHabitDue(item,date){if(item.paused||!item.action||item.freq==='none'||(item.startedAt&&devDateKey(date)<item.startedAt))return false;
- const dow=date.getDay();return item.freq==='daily'||(item.freq==='weekdays'&&dow!==0&&dow!==6)||(item.freq==='weekends'&&(dow===0||dow===6))||(item.freq==='weekly'&&dow===Number(item.weekday));}
+function devHomeHabitDue(item,date){return !item.paused&&devIsDue(item,date);}
 function devHomeActivityAt(date){const day=devDateKey(date);let n=0;
  devState.items.forEach(item=>{if(item.completed?.[day])n++;
+  const extra=Object.values(item.actionCompleted||{});extra.forEach(history=>{if(history&&history[day])n++});
   if(item.kind!=='habit')item.steps?.forEach(step=>{if(step.done&&step.completedAt===day)n++});});
  return n;
 }
@@ -1889,12 +2138,12 @@ function devHomePeriodData(days){const actions=[],previous=[];
  let habitPlanned=0,habitDone=0,daysPlanned=0,daysActive=0;
  for(let off=days-1;off>=0;off--){const date=devHomeDateAtOffset(-off),key=devDateKey(date);
   let planned=0,done=0;
-  habits.forEach(item=>{if(devHomeHabitDue(item,date)){planned++;if(item.completed?.[key])done++;}});
+  habits.forEach(item=>{const actions=devHomeDueActions(item,date);planned+=actions.length;done+=actions.filter(a=>a.completed).length;});
   habitPlanned+=planned;habitDone+=done;
   if(planned){daysPlanned++;if(done)daysActive++;}
  }
- const today=devDateKey(),dueToday=devTodayActions();
- const todayRate=dueToday.length?Math.round(dueToday.filter(i=>i.completed?.[today]).length/dueToday.length*100):null;
+ const dueToday=devState.items.flatMap(i=>devHomeDueActions(i));
+ const todayRate=dueToday.length?Math.round(dueToday.filter(a=>a.completed).length/dueToday.length*100):null;
  const metrics=[{name:'Цели',score:percentItems(goals)},{name:'Навыки',score:percentItems(skills)},
  {name:'Привычки',score:habitPlanned?Math.round(habitDone/habitPlanned*100):null},
  {name:'Сегодня',score:todayRate},
@@ -1951,16 +2200,105 @@ function devHomeToggleDetails(){
 }
 function devHomeSetPeriod(value){if(![7,30,90,365].includes(Number(value)))return;devHomePeriodDays=Number(value);devRenderHome();}
 function devHomeRing(percent,cls=''){return `<span class="home22-ring ${cls}" style="--p:${percent}%" aria-hidden="true"><b>${percent}%</b></span>`;}
-function devHomeTile(item){const area=devArea(item.areaId),percentage=devPercent(item),steps=item.steps||[],done=steps.filter(s=>s.done).length,isHabit=item.kind==='habit';
- const meta=isHabit?`${devWeekStats(item).done} отмечено на неделе`:`${done} из ${steps.length} этапов`;
- return `<button type="button" class="home22-tile ${item.paused?'is-paused':''}" data-kind="${item.kind}" onclick="devHomeOpenItem('${item.id}')" aria-label="Открыть ${devKindName(item.kind).toLowerCase()} ${devEsc(item.title)}. Прогресс ${percentage}%">
-  <span class="home22-tile-top"><span class="home23-tile-glyph" aria-hidden="true">${item.kind==='goal'?'◎':item.kind==='skill'?'↗':'◷'}</span>${devHomeRing(percentage)}</span>
-  <span class="home22-tile-main"><span class="home22-tile-title">${devEsc(item.title)}</span></span>
-  <span class="home22-tile-foot"><span>${isHabit?`${devWeekStats(item).done} за нед.`:`${done}/${steps.length} этапов`}</span></span>
- </button>`;
+function devHomeDueActions(item,date=new Date()){
+ if(!item||item.paused||devIsFinished(item))return [];
+ const key=devDateKey(date);
+ return v25Actions(item).map((action,index)=>{
+  const scheduled=devIsDue({...item,action:action.title,freq:action.freq,weekday:action.weekday,days:action.days},date);
+  const id=action.id||'primary';
+  const completed=index===0?!!item.completed?.[key]:!!item.actionCompleted?.[id]?.[key];
+  return {id,title:action.title,time:action.time,index,completed,scheduled};
+ }).filter(action=>action.scheduled);
 }
+function devHomeBackAction(item){
+ const actions=devHomeDueActions(item),total=actions.length;
+ if(!total){
+  const note=item.paused?'План на паузе':devIsFinished(item)?'Цель достигнута!':'Сегодня ничего не нужно делать';
+  return `<div class="home27-back-empty">${note}</div>`;
+ }
+ let idx=devHomeTodayActionIndex[item.id]||0;idx=((idx%total)+total)%total;
+ const a=actions[idx],doneCount=actions.filter(x=>x.completed).length;
+ return `<div class="home27-today-name" title="${devEsc(a.title)}">${devEsc(a.title)}</div>
+ <div class="home27-action-row">
+  ${total>1?`<button class="home27-pager-button" type="button" aria-label="Предыдущее действие" onclick="devHomeNextToday('${item.id}',-1)">‹</button>`:''}
+  <button class="home27-action-check" type="button" aria-pressed="${a.completed}" aria-label="${a.completed?'Отменить выполнение':'Отметить выполненным'}: ${devEsc(a.title)}" onclick="devHomeCheckToday('${item.id}',${a.index})">${a.completed?'✓':'○'}</button>
+  ${total>1?`<button class="home27-pager-button" type="button" aria-label="Следующее действие" onclick="devHomeNextToday('${item.id}',1)">›</button>`:''}
+ </div>`;
+}
+function devHomeFlip(id,toBack){
+ const card=[...document.querySelectorAll('#home .home27-card')].find(el=>el.dataset.itemId===id);
+ if(!card)return;
+ const flip=toBack===undefined?!card.classList.contains('is-flipped'):!!toBack;
+ devHomeFlippedId=flip?id:null;
+ document.querySelectorAll('#home .home27-card').forEach(el=>{
+  const active=flip&&el===card;
+  el.classList.toggle('is-flipped',active);
+  const front=el.querySelector('.home27-face-front'),back=el.querySelector('.home27-face-back');
+  if(front){front.inert=active;front.setAttribute('aria-hidden',String(active));}
+  if(back){back.inert=!active;back.setAttribute('aria-hidden',String(!active));}
+ });
+}
+function devHomeNextToday(id,delta){
+ const item=devItem(id);if(!item)return;
+ const count=devHomeDueActions(item).length;if(!count)return;
+ devHomeTodayActionIndex[id]=((devHomeTodayActionIndex[id]||0)+delta+count)%count;
+ const card=[...document.querySelectorAll('#home .home27-card')].find(el=>el.dataset.itemId===id);
+ const body=card?.querySelector('.home27-back-body');if(body)body.innerHTML=devHomeBackAction(item);
+}
+function devHomeCheckToday(id,index){
+ const item=devItem(id),action=v25Actions(item||{})[index];
+ if(!item||!action)return;
+ const due=devHomeDueActions(item);
+ if(!due.some(x=>x.index===index))return;
+ v25ToggleAction(id,action.id||'primary',index);
+}
+function devHomeTile(item){
+ const percentage=devPercent(item),steps=item.steps||[],done=steps.filter(s=>s.done).length,isHabit=item.kind==='habit';
+ const due=devHomeDueActions(item),todayDone=due.filter(a=>a.completed).length;
+ const flipped=devHomeFlippedId===item.id;
+ return `<div class="home22-tile home27-card ${item.paused?'is-paused':''} ${flipped?'is-flipped':''}" data-item-id="${item.id}" data-kind="${item.kind}" aria-label="${devKindName(item.kind)}: ${devEsc(item.title)}">
+ <div class="home27-inner">
+  <div class="home27-face home27-face-front" aria-hidden="${flipped}" ${flipped?'inert':''}>
+   <button class="home27-front-trigger" type="button" onclick="devHomeFlip('${item.id}',true)" aria-label="${devEsc(item.title)}: перевернуть и показать задания на сегодня">
+    <span class="home22-tile-top"><span class="home23-tile-glyph" aria-hidden="true">${item.kind==='goal'?'◎':item.kind==='skill'?'↗':'◷'}</span>${devHomeRing(percentage)}</span>
+    <span class="home22-tile-main"><span class="home22-tile-title">${devEsc(item.title)}</span></span>
+    <span class="home22-tile-foot"><span>${isHabit?`${devWeekStats(item).done} за нед.`:`${done}/${steps.length} этапов`}</span><span class="home27-flip-hint" aria-hidden="true">↻</span></span>
+   </button>
+  </div>
+  <div class="home27-face home27-face-back" aria-hidden="${!flipped}" ${flipped?'':'inert'}>
+   <div class="home27-back-head"><span>${due.length?`Сегодня ${todayDone}/${due.length}`:'Сегодня'}</span><button class="home27-flip-back" type="button" onclick="devHomeFlip('${item.id}',false)" aria-label="Вернуться к прогрессу ${devEsc(item.title)}">↶</button></div>
+   <div class="home27-back-body">${devHomeBackAction(item)}</div>
+   <button class="home27-detail-button" type="button" onclick="devHomeOpenItem('${item.id}')">Подробнее ›</button>
+  </div>
+ </div>
+ </div>`;
+}
+
+function devHomeTodayOverview(){
+ const date=new Date(),all=[];
+ devState.items.forEach(item=>{
+  devHomeDueActions(item,date).forEach(action=>all.push({item,action}));
+ });
+ all.sort((a,b)=>Number(a.action.completed)-Number(b.action.completed)||String(a.action.time||'99:99').localeCompare(String(b.action.time||'99:99'))||a.item.title.localeCompare(b.item.title,'ru'));
+ const done=all.filter(x=>x.action.completed).length,total=all.length;
+ const visible=devHomeTodayExpanded?all:all.slice(0,5);
+ const actionHTML=({item,action})=>`<div class="home28-item ${action.completed?'is-done':''}">
+ <button type="button" class="home28-check" aria-pressed="${action.completed}" aria-label="${action.completed?'Отменить выполнение':'Выполнить'}: ${devEsc(action.title)}" onclick="devHomeCheckToday('${item.id}',${action.index})">${action.completed?'✓':'○'}</button>
+ <div class="home28-info"><div class="home28-task">${devEsc(action.title)}</div><div class="home28-meta">${devEsc(item.title)} · ${devKindName(item.kind)}${action.time?' · '+devEsc(action.time):''}</div></div>
+ </div>`;
+ return `<section class="home28-today dev-entry" aria-label="Важно сегодня"><div class="home28-head"><h2>Важно сегодня</h2><span class="home28-pill">${done} из ${total}</span></div>
+ <p class="home28-desc">Все запланированные действия в одном месте</p>
+ ${total?`<div class="home28-bar" role="progressbar" aria-label="Выполнено сегодня" aria-valuemin="0" aria-valuemax="${total}" aria-valuenow="${done}"><span style="width:${Math.round(done/total*100)}%"></span></div><div class="home28-list">${visible.map(actionHTML).join('')}</div>${total>5?`<button type="button" class="home28-more" aria-expanded="${devHomeTodayExpanded}" onclick="devHomeToggleToday()">${devHomeTodayExpanded?'Свернуть':'Показать все · '+total} <span aria-hidden="true">${devHomeTodayExpanded?'⌃':'⌄'}</span></button>`:''}`:'<div class="home28-empty">На сегодня ничего не запланировано. Можно отдохнуть или открыть свои цели.</div>'}
+ </section>`;
+}
+function devHomeToggleToday(){
+ devHomeTodayExpanded=!devHomeTodayExpanded;
+ const section=document.querySelector('#home .home28-today');
+ if(section){section.outerHTML=devHomeTodayOverview();}
+}
+
 function devHomeBoard(title,items,key){return `<section class="home22-section dev-entry"><div class="home22-sectionhead"><h2>${title}</h2><span>${items.length} шт.</span></div>
- ${items.length?`<div class="home22-carousel" data-board="${key}" role="region" tabindex="0" aria-label="${title}, листай влево и вправо">${items.map(devHomeTile).join('')}</div><p class="home22-swipehelp">← Листай карточки влево и вправо</p>`:`<div class="home22-empty">Здесь пока пусто. <button type="button" onclick="go('development')">Добавить в «Развитии»</button></div>`}</section>`;}
+ ${items.length?`<div class="home22-carousel" data-board="${key}" role="region" tabindex="0" aria-label="${title}, листай влево и вправо">${items.map(devHomeTile).join('')}</div><p class="home22-swipehelp">Листай в стороны · переверни для отметки</p>`:`<div class="home22-empty">Здесь пока пусто. <button type="button" onclick="go('development')">Добавить в «Развитии»</button></div>`}</section>`;}
 function devHomeOpenItem(id){if(!devItem(id))return;document.querySelectorAll('#home [data-board]').forEach(el=>{devHomeCarouselPos[el.dataset.board]=el.scrollLeft});devHomeOpenItemId=id;devRenderHome();window.scrollTo({top:0,behavior:'smooth'});}
 function devHomeCloseItem(){devHomeOpenItemId=null;devRenderHome();window.scrollTo({top:0,behavior:'smooth'});}
 function devHomeStepRows(item){const steps=item.steps||[],next=steps.find(s=>!s.done);
@@ -1973,17 +2311,18 @@ function devHomeStepRows(item){const steps=item.steps||[],next=steps.find(s=>!s.
 function devHomeHabitCalendar(item){const labels=['Пн','Вт','Ср','Чт','Пт','Сб','Вс'];return `<div class="home22-calendar">${Array.from({length:7},(_,idx)=>{const date=devHomeDateAtOffset(idx-6),key=devDateKey(date),done=!!item.completed?.[key];return `<div class="home22-day ${done?'is-done':''}"><span>${labels[(date.getDay()+6)%7]}</span><b>${done?'✓':devHomeHabitDue(item,date)?'·':'–'}</b></div>`}).join('')}</div>`;}
 function devHomeItemDetail(item){const area=devArea(item.areaId),pct=devPercent(item),habit=item.kind==='habit',next=item.steps?.find(s=>!s.done);
  const todayKey=devDateKey(),due=devIsDue(item,new Date()),isDone=!!item.completed?.[todayKey];
- const regular=item.action?`<section class="home22-detail-section"><h3>Регулярное действие</h3><div class="home22-todayline"><div><small>${due?'На сегодня':'По твоему расписанию'}</small><p>${devEsc(item.action)}</p></div><button type="button" class="home22-check" aria-label="${isDone?'Отменить':'Выполнить'} регулярное действие" aria-pressed="${isDone}" onclick="devToggleDaily('${item.id}')">${isDone?'✓':''}</button></div>
- <div class="home22-schedule"><span>Повторение</span><strong>${devEsc(devFreqLabel(item))} · ${devEsc(item.time||'без времени')}</strong></div></section>`:'';
+ const regular=v25Actions(item).length?`<section class="home22-detail-section"><h3>Регулярные действия</h3><div class="home22-note">Отмечай каждое действие отдельно. Их расписание можно изменить в Развитии.</div>${v25Actions(item).map((action,index)=>{const key=action.id||'primary',done=index===0?!!item.completed?.[todayKey]:!!item.actionCompleted?.[key]?.[todayKey];const adue=devIsDue({...item,action:action.title,freq:action.freq,weekday:action.weekday,days:action.days},new Date());return `<div class="v25-regular-item"><div><strong>${devEsc(action.title)}</strong><p>${devEsc(devFreqLabel(action))} · ${devEsc(action.time||'без времени')}${adue?' · сегодня':''}</p></div><button type="button" class="home22-check" aria-pressed="${done}" aria-label="${done?'Отменить':'Выполнить'} ${devEsc(action.title)}" onclick="v25ToggleAction('${item.id}','${key}',${index})">${done?'✓':''}</button></div>`}).join('')}</section>`:'';
  return `<div class="home22-detail"><button type="button" class="home22-back" onclick="devHomeCloseItem()">← Назад на Главную</button>
  <section class="home22-detail-head"><div class="home22-detail-kicker">${devEsc(area?.name||'Развитие')} · ${devKindName(item.kind)} ${item.paused?'· на паузе':''}</div>
  <h2 class="home22-detail-title">${devEsc(item.title)}</h2>${item.description?`<p class="home22-detail-desc">${devEsc(item.description)}</p>`:''}
  <div class="home22-detail-stat">${devHomeRing(pct)}<div><span>Прогресс ${devKindName(item.kind).toLowerCase()}</span><b>${habit?`${devWeekStats(item).done} отметок на неделе`:`${item.steps.filter(s=>s.done).length} из ${item.steps.length} этапов`}</b></div></div></section>
  ${habit?`<section class="home22-detail-section"><h3>Последние 7 дней</h3><div class="home22-note">Отметки помогают замечать регулярность без лишних графиков.</div>${devHomeHabitCalendar(item)}</section>`:`<section class="home22-detail-section"><h3>Этапы цели · ${item.steps.filter(s=>s.done).length}/${item.steps.length}</h3>${devHomeStepRows(item)}</section>`}
  ${regular}
+ <button type="button" class="ai29-dev-open" onclick="ai29OpenItem('${item.id}')"><span>✦ Открыть ИИ-план и записи</span><span aria-hidden="true">↗</span></button>
  <section class="home22-detail-section"><h3>Напоминание</h3><div style="font-size:12px;color:#b6cbbc;line-height:1.5">${item.homeReminder?.enabled?`Включено на ${devEsc(item.homeReminder.time)} · когда приложение открыто`:'Выключено · можно включить для этой цели'}</div><div class="home22-detail-actions" style="margin-top:12px"><button type="button" class="home22-smallbtn" onclick="devHomeOpenReminder('${item.id}')">Настроить время</button><button type="button" class="home22-smallbtn is-muted" onclick="go('development');devOpenItem('${item.id}')">Изменить в Развитии ↗</button></div><div class="home22-note">Напоминания работают только при открытом SkillUp. Фоновые уведомления Telegram пока не подключены.</div></section>
  </div>`;
 }
+function v25ToggleAction(id,actionId,index){const scrollBefore=window.scrollY;const item=devItem(id);if(!item)return;const day=devDateKey();if(index===0){item.completed||={};if(item.completed[day])delete item.completed[day];else item.completed[day]=true;}else{item.actionCompleted||={};item.actionCompleted[actionId]||={};if(item.actionCompleted[actionId][day])delete item.actionCompleted[actionId][day];else item.actionCompleted[actionId][day]=true;}devPersist();devRenderHome();window.scrollTo({top:scrollBefore,behavior:'instant'});if(devView.level!=='overview')devRender();toast('Отметка обновлена');}
 function devHomeOpenReminder(id){const item=devItem(id);if(!item)return;const time=item.homeReminder?.time||item.time||'19:00',enabled=!!item.homeReminder?.enabled;
  document.getElementById('modalcontent').innerHTML=`<div class="eyebrow">НАПОМИНАНИЕ В SKILLUP</div><h3>Время для действия</h3><p>${devEsc(item.title)}</p>
  <div class="home22-reminder-control"><label for="home22ReminderEnabled">Напоминать мне</label><input id="home22ReminderEnabled" type="checkbox" ${enabled?'checked':''}></div>
@@ -2009,7 +2348,7 @@ function devRenderHome(){const root=document.getElementById('home');if(!root)ret
  const items=devState.items,goals=items.filter(i=>i.kind==='goal'),skills=items.filter(i=>i.kind==='skill'),habits=items.filter(i=>i.kind==='habit');
  if(devHomeOpenItemId&&!devItem(devHomeOpenItemId))devHomeOpenItemId=null;
  root.innerHTML=devHomeOpenItemId?devHomeItemDetail(devItem(devHomeOpenItemId)):
-  devHomeOverview()+devHomeBoard('Мои цели',goals,'goals')+devHomeBoard('Навыки',skills,'skills')+devHomeBoard('Привычки',habits,'habits')+
+  devHomeOverview()+devHomeTodayOverview()+devHomeBoard('Мои цели',goals,'goals')+devHomeBoard('Навыки',skills,'skills')+devHomeBoard('Привычки',habits,'habits')+
   `<div class="home-bottom-note">Настроить план и этапы можно в <button type="button" onclick="go('development')">Развитии ↗</button></div>`;
  root.querySelectorAll('[data-board]').forEach(el=>{if(devHomeCarouselPos[el.dataset.board]!=null)el.scrollLeft=devHomeCarouselPos[el.dataset.board]});
  devHomeHasRendered=true;
@@ -2022,44 +2361,342 @@ function renderProfileAreas(){const el=document.getElementById('profileAreas');i
  el.innerHTML=devState.areas.map(a=>`<div class="profile-row"><div class="area-icon">${devEsc(a.icon)}</div><div class="grow"><div class="rowtitle">${devEsc(a.name)}</div><div class="rowdesc">${devInArea(a.id).length} активностей</div></div><button class="textbtn" onclick="go('development');devOpenArea('${a.id}')">Открыть</button></div>`).join('')||'<div class="empty">Пока нет направлений</div>';
 }
 
+/* SkillUp v29: persistent goal-scoped notebook and daily learning preview.
+   No model is bundled: without an explicit backend this is a rule-based demo.
+   To connect a verified AI server, set window.SKILLUP_AI_API_URL to its POST endpoint.
+*/
+const AI29_STORAGE_KEY='skillup_ai_workspace_v29';
+const AI29_SCOPES=['general'];
+let ai29State={version:1,active:'general',chats:{},notes:{},sessions:{},lessons:{}};
+let ai29Busy=false,ai29LessonExpanded=false,ai29NotesExpanded=false;
+let ai29SessionRating='normal';
+function ai29Read(){
+ try{const x=JSON.parse(localStorage.getItem(AI29_STORAGE_KEY)||'null');if(x&&typeof x==='object'&&!Array.isArray(x)){
+  ai29State={version:1,active:typeof x.active==='string'?x.active:'general',chats:x.chats&&typeof x.chats==='object'?x.chats:{},notes:x.notes&&typeof x.notes==='object'?x.notes:{},sessions:x.sessions&&typeof x.sessions==='object'?x.sessions:{},lessons:x.lessons&&typeof x.lessons==='object'?x.lessons:{}};
+ }}catch(e){};
+}
+function ai29Write(){try{localStorage.setItem(AI29_STORAGE_KEY,JSON.stringify(ai29State))}catch(e){toast('Хранилище переполнено. Скопируй важные заметки.')}}
+function ai29ValidScope(key){return key==='general'||(key.startsWith('item:')&&!!devItem(key.slice(5)))||(key.startsWith('area:')&&!!devArea(key.slice(5)));}
+function ai29Current(){return ai29ValidScope(ai29State.active)?ai29State.active:'general';}
+function ai29SelectedItem(){const ctx=ai29Current();return ctx.startsWith('item:')?devItem(ctx.slice(5)):null;}
+function ai29SelectedArea(){const ctx=ai29Current();const item=ai29SelectedItem();return item?devArea(item.areaId):ctx.startsWith('area:')?devArea(ctx.slice(5)):null;}
+function ai29Text(x){return devEsc(String(x??''));}
+function ai29HtmlDate(ms){return new Date(ms).toLocaleDateString('ru-RU',{day:'numeric',month:'short'});}
+function ai29Messages(){return Array.isArray(ai29State.chats[ai29Current()])?ai29State.chats[ai29Current()]:[];}
+function ai29Notes(){return Array.isArray(ai29State.notes[ai29Current()])?ai29State.notes[ai29Current()]:[];}
+function ai29Sessions(){return Array.isArray(ai29State.sessions[ai29Current()])?ai29State.sessions[ai29Current()]:[];}
+function ai29AddMessage(ctx,role,text,mode='demo'){
+ const a=Array.isArray(ai29State.chats[ctx])?ai29State.chats[ctx]:[];
+ a.push({role,text:String(text).slice(0,6000),at:Date.now(),mode});
+ ai29State.chats[ctx]=a.slice(-120);ai29Write();
+}
+function ai29ScopeList(){
+ let html='<option value="general">✦ Общее развитие</option>';
+ for(const area of devState.areas){
+  html+=`<optgroup label="${ai29Text(area.icon+' '+area.name)}">`;
+  html+=`<option value="area:${ai29Text(area.id)}">✎ Всё направление</option>`;
+  for(const item of devInArea(area.id))html+=`<option value="item:${ai29Text(item.id)}">${item.kind==='goal'?'◎':item.kind==='skill'?'↗':'◷'} ${ai29Text(item.title)}</option>`;
+  html+='</optgroup>';
+ }
+ return html;
+}
+function ai29SelectContext(key){
+ if(!ai29ValidScope(String(key)))key='general';
+ ai29State.active=String(key);ai29Busy=false;ai29LessonExpanded=false;ai29NotesExpanded=false;ai29SessionRating='normal';ai29Write();ai29Render();
+}
+function ai29OpenItem(id){const item=devItem(id);if(!item)return toast('План больше не существует');ai29State.active='item:'+id;ai29Write();go('assistant');ai29Render();}
+function ai29OpenArea(id){if(!devArea(id))return;ai29State.active='area:'+id;ai29Write();go('assistant');ai29Render();}
+function ai29OpenPrompt(s){
+ if(!document.getElementById('assistant')?.classList.contains('active'))go('assistant');
+ ai29Send(s);
+}
+function ai29GoalStats(item,days=7,offset=0){
+ let planned=0,done=0;
+ for(let n=days-1;n>=0;n--){const date=devLocalDateOffset(-n-offset),key=devDateKey(date);
+  for(const a of v25Actions(item)){
+   const scheduled=v26DaysFor(a).includes(date.getDay());
+   if(!scheduled||item.startedAt&&key<item.startedAt)continue;
+   planned++;
+   const idx=v25Actions(item).indexOf(a);
+   if(idx===0?!!item.completed?.[key]:!!item.actionCompleted?.[a.id||'primary']?.[key])done++;
+  }
+ }
+ return {done,planned,percent:planned?Math.round(done/planned*100):null};
+}
+function ai29Minutes(item){
+ const names=v25Actions(item).map(a=>a.title).join(' ');
+ const hit=names.match(/\b(\d{1,2})\s*(?:минут|мин\b)/i);
+ return hit?Math.max(5,Math.min(90,Number(hit[1]))):20;
+}
+const AI29_ENGLISH_MODULES=[
+ {name:'Знакомство и просьба о помощи',learn:'Hello, my name is… / Could you help me, please? / I am visiting for a week.',practice:'Представь знакомство в поездке. Скажи вслух 5 фраз о себе, затем попроси о помощи и ответь на воображаемый вопрос.',check:'Без подсказки скажи: «Я здесь впервые. Вы можете мне помочь?»'},
+ {name:'Аэропорт и посадка',learn:'Where is gate twelve? / Is this the line for boarding? / My flight is delayed.',practice:'Разыграй 3 коротких диалога: найти выход, спросить время посадки, объяснить задержку рейса.',check:'Сформулируй самостоятельно вопрос о выходе на посадку.'},
+ {name:'Заселение в отель',learn:'I have a reservation. / Could I check in early? / What time is breakfast?',practice:'Сыграй обе роли при заселении: назови имя, задай вопрос о завтраке и попроси дополнительное полотенце.',check:'Без подсказки попроси ключ от номера и уточни время выезда.'},
+ {name:'Кафе и ресторан',learn:'Could I have the menu, please? / I would like… / Could we have the bill?',practice:'Составь заказ из двух блюд и напитка, уточни ингредиент и попроси счёт.',check:'Скажи вслух вежливый заказ без чтения с экрана.'},
+ {name:'Как спросить дорогу',learn:'How do I get to…? / Turn left at the corner. / Is it far from here?',practice:'Представь, что ищешь музей: спроси дорогу, перескажи маршрут и уточни, можно ли дойти пешком.',check:'Объясни своими словами маршрут из трёх поворотов.'},
+ {name:'Покупки и небольшие проблемы',learn:'How much does it cost? / Do you have a different size? / I lost my bag.',practice:'Сыграй 2 ситуации: покупка сувенира и сообщение о потерянной вещи.',check:'Произнеси три вежливых вопроса без подсказки.'}
+];
+function ai29IsEnglish(item){const area=devArea(item.areaId);return /англ|english|иностранн|язык/.test([item.title,item.description,area?.name,...v25Actions(item).map(a=>a.title)].join(' ').toLowerCase());}
+function ai29SessionPlan(item){
+ const key='item:'+item.id,now=devDateKey();
+ const remote=ai29State.lessons[key+':'+now];
+ if(remote&&Array.isArray(remote.phases))return {...remote,source:'server'};
+ const earlier=(ai29State.sessions[key]||[]).filter(s=>s.date<now).sort((a,b)=>a.date.localeCompare(b.date));
+ const prev=earlier.at(-1);const english=ai29IsEnglish(item),n=english?AI29_ENGLISH_MODULES.length:5;
+ const moduleIndex=prev?(Number(prev.moduleIndex||0)+(prev.rating==='hard'?0:1))%n:0;
+ const minutes=ai29Minutes(item);const m1=Math.round(minutes*.2),m2=Math.round(minutes*.3),m4=Math.max(1,Math.round(minutes*.1)),m3=minutes-m1-m2-m4;
+ const step=devNextStep(item)?.title||'Закрепить то, чему уже научился';const action=v25Actions(item)[0]?.title||'Сделать короткое действие по цели';
+ const theme=AI29_ENGLISH_MODULES[moduleIndex];
+ const phases=english?[
+  {minutes:m1,title:'Повторение',description:`Вспомни 3–5 фраз из прошлого занятия. ${prev?.rating==='hard'?'Работай медленнее и повторяй по одной фразе.':'Постарайся вспомнить без подсказки.'}`},
+  {minutes:m2,title:'Новый материал',description:`Тема: ${theme.name}.\nПрочитай и произнеси: ${theme.learn}`},
+  {minutes:m3,title:'Практика вслух',description:theme.practice},
+  {minutes:m4,title:'Мини-проверка',description:`${theme.check}\nЗапиши, что было трудно.`}
+ ]:[
+  {minutes:m1,title:'Вспомни предыдущий результат',description:`Цель: ${item.title}. Вспомни, что уже получилось и где возникла трудность.`},
+  {minutes:m2,title:'Один следующий шаг',description:`Фокус: ${step}.\nСформулируй конкретный результат этого занятия.`},
+  {minutes:m3,title:'Практическое действие',description:`Выполни часть плана: ${action}. ${prev?.rating==='hard'?'Если трудно, уменьши объём вдвое и сосредоточься на качестве.':'Работай без отвлечений и фиксируй результат.'}`},
+  {minutes:m4,title:'Оцени итог',description:'Что именно удалось? Что мешало? Выбери сложность ниже, чтобы скорректировать следующее занятие.'}
+ ];
+ return {title:english?theme.name:(moduleIndex===0?'Первый конкретный шаг':`Занятие ${earlier.length+1}: следующий шаг`),minutes,moduleIndex,phases,source:'demo'};
+}
+function ai29ProgressAnalysis(item){
+ const week=ai29GoalStats(item,7),before=ai29GoalStats(item,7,7);const done=item.steps?.filter(s=>s.done).length||0,total=item.steps?.length||0;
+ const difference=week.planned&&before.planned?week.percent-before.percent:null;
+ const delta=difference===null?'Недостаточно прошлых данных для сравнения':difference>0?`Регулярность выросла на ${difference} п.п.`:difference<0?`Регулярность снизилась на ${Math.abs(difference)} п.п.`:'Регулярность стабильна';
+ return {week,before,done,total,delta};
+}
+function ai29CurrentSnapshot(){
+ const key=ai29Current(),item=ai29SelectedItem(),area=ai29SelectedArea();
+ const scopeItems=key==='general'?devState.items: item?[item]:area?devInArea(area.id):[];
+ return {scope:key,scopeTitle:item?.title||area?.name||'Общее развитие',area:area?{id:area.id,name:area.name}:null,item:item?{id:item.id,title:item.title,kind:item.kind,description:item.description||'',paused:!!item.paused,percent:devPercent(item),steps:item.steps||[],actions:v25Actions(item),today:devHomeDueActions(item),progress:ai29ProgressAnalysis(item)}:null,goals:scopeItems.map(i=>({id:i.id,title:i.title,kind:i.kind,percent:devPercent(i)})),recentSessions:ai29Sessions().slice(-7),notes:ai29Notes().slice(-5).map(n=>n.text),date:devDateKey()};
+}
+function ai29ContextPanel(){
+ const item=ai29SelectedItem(),area=ai29SelectedArea(),key=ai29Current();
+ if(item){const p=devPercent(item),analysis=ai29ProgressAnalysis(item),actions=devHomeDueActions(item),next=devNextStep(item);
+  return `<section class="ai29-context"><h3 class="ai29-context-title">${ai29Text(item.title)}</h3><div class="ai29-context-meta">${devKindName(item.kind)} · ${ai29Text(area?.name||'Без направления')}${item.paused?' · На паузе':''}</div>
+  <div class="ai29-meter"><div class="ai29-meter-circle" style="--pc:${p}%"><span>${p}%</span></div><div class="ai29-meter-copy"><strong>${next?'Следующий этап: '+ai29Text(next.title):item.kind==='habit'?'Продолжай выбранный ритм':'Этапы выполнены или ещё не добавлены'}</strong><span>За 7 дней: ${analysis.week.done} из ${analysis.week.planned} регулярных действий${actions.length?' · сегодня '+actions.length:''}</span></div></div>
+  <div class="ai29-quick-row"><button class="ai29-action ai29-action-main" type="button" onclick="ai29ScrollToLesson()">План занятия ↓</button><button class="ai29-action" type="button" onclick="ai29Ask('Разбери мой прогресс за неделю и предложи улучшение')">Разбор прогресса</button></div></section>`;
+ }
+ const items=area?devInArea(area.id):devState.items;
+ const nGoals=items.filter(i=>i.kind==='goal').length,nSkills=items.filter(i=>i.kind==='skill').length,nHabits=items.filter(i=>i.kind==='habit').length;
+ return `<section class="ai29-context"><h3 class="ai29-context-title">${area?'Развитие: '+ai29Text(area.name):'Твоё пространство развития'}</h3><div class="ai29-context-meta">${area?'Планы и заметки направления':'Планы, идеи и вопросы, не привязанные к одной цели'}</div>
+ <div class="ai29-summary-mini"><div><b>${nGoals}</b><small>целей</small></div><div><b>${nSkills}</b><small>навыков</small></div><div><b>${nHabits}</b><small>привычек</small></div></div>
+ <div class="ai29-quick-row"><button class="ai29-action ai29-action-main" onclick="ai29StartGoalWizard()">＋ Цель с помощником</button><button class="ai29-action" onclick="ai29Ask('Подведи итоги моего развития и подскажи, что улучшить')">Обзор прогресса</button></div></section>`;
+}
+function ai29LessonPanel(){const item=ai29SelectedItem();if(!item)return '';
+ const session=ai29SessionPlan(item),key=ai29Current(),today=devDateKey();const todaySession=ai29Sessions().find(s=>s.date===today);const prev=ai29Sessions().filter(s=>s.date<today).sort((a,b)=>a.date.localeCompare(b.date)).at(-1);
+ const nextTopic=ai29IsEnglish(item)?AI29_ENGLISH_MODULES[(session.moduleIndex+(todaySession?.rating==='hard'?0:1))%AI29_ENGLISH_MODULES.length].name:'следующий этап твоего плана';
+ const content=ai29LessonExpanded?`<div class="ai29-lesson-top"><b>${ai29Text(session.title)}</b><span class="ai29-demo">${session.minutes} минут</span></div>
+ ${session.phases.map(p=>`<div class="ai29-phase"><span class="ai29-phase-time">${p.minutes} мин</span><div><div class="ai29-phase-title">${ai29Text(p.title)}</div><div class="ai29-phase-description">${ai29Text(p.description)}</div></div></div>`).join('')}
+ ${todaySession?`<div class="ai29-session-footer"><div class="ai29-session-done">✓ Результат за сегодня сохранён · ${todaySession.rating==='easy'?'Было легко':todaySession.rating==='hard'?'Было трудно':'В самый раз'}.<br>Следующий фокус: ${ai29Text(nextTopic)}.</div><button type="button" class="ai29-action" style="margin-top:10px;width:100%" onclick="ai29ResetTodayFeedback()">Изменить оценку занятия</button></div>`:
+ `<div class="ai29-session-footer"><div class="ai29-feedback-label">После занятия: как прошли ${session.minutes} минут?</div><div class="ai29-feedback">
+ <button type="button" class="${ai29SessionRating==='hard'?'is-selected':''}" aria-pressed="${ai29SessionRating==='hard'}" onclick="ai29SetRating('hard')">Было трудно</button>
+ <button type="button" class="${ai29SessionRating==='normal'?'is-selected':''}" aria-pressed="${ai29SessionRating==='normal'}" onclick="ai29SetRating('normal')">В самый раз</button>
+ <button type="button" class="${ai29SessionRating==='easy'?'is-selected':''}" aria-pressed="${ai29SessionRating==='easy'}" onclick="ai29SetRating('easy')">Было легко</button></div>
+ <textarea id="ai29FeedbackText" class="ai29-feedback-note" maxlength="400" placeholder="Что получилось? Что было сложно? (необязательно)"></textarea>
+ <button type="button" class="primary ai29-session-controls" onclick="ai29CompleteSession()">Сохранить итог занятия</button><p class="ai29-small-muted">Если на сегодня запланировано действие этой цели, оно тоже будет отмечено. Завтра план учтёт твою оценку.</p></div>`}
+ `:`<div class="ai29-collapsed-line"><strong>${ai29Text(session.title)}</strong><span>${session.minutes} минут · 4 части · ${todaySession?'завершено':'ожидает'}</span></div>`;
+ const configured=!!window.SKILLUP_AI_API_URL;
+ return `<section id="ai29Session" class="ai29-session"><div class="ai29-session-head"><h3>Занятие на сегодня</h3><span class="ai29-session-tag">${session.source==='server'?'✦ Составлено ИИ':'✦ Примерный маршрут · демо'}</span></div><p class="ai29-session-sub">${session.source==='server'?'План создан подключённым сервером и привязан к твоей цели.':'План составлен локальным алгоритмом. Для индивидуальных заданий и диалогов нужен настоящий ИИ.'} ${prev?.rating==='hard'?'Прошлое занятие было сложным: нагрузка снижена.':''}</p>
+ ${configured?`<button class="ai29-server-btn" type="button" onclick="ai29GenerateServerLesson()">✦ Составить персональное занятие с ИИ</button>`:''}
+ ${content}<button class="ai29-session-expand ${ai29LessonExpanded?'':'is-prominent'}" type="button" aria-expanded="${ai29LessonExpanded}" onclick="ai29ToggleLesson()">${ai29LessonExpanded?'Свернуть занятие ↑':'Показать занятие ↓'}</button></section>`;
+}
+function ai29ChatPanel(){
+ const messages=ai29Messages();const item=ai29SelectedItem();
+ const promptList=item?['Что делать сегодня?','Разбери прогресс','Как изменить план?']:['Разбери мой прогресс','Помоги сформулировать цель','Как выстроить привычку?'];
+ return `<section class="ai29-chat"><div class="ai29-chat-heading"><span>Диалог и история</span><span class="ai29-chat-count">${messages.length} сообщений · только эта тема</span></div>
+ <div id="ai29ChatStream" class="ai29-chat-stream" role="log" aria-label="История диалога" aria-live="polite">
+ ${messages.length?messages.map(msg=>`<div class="ai29-message ${msg.role==='user'?'user':'assistant'}">${ai29Text(msg.text)}<small>${msg.role==='user'?'Ты':msg.mode==='server'?'ИИ':'Демо-помощник'} · ${new Date(msg.at).toLocaleString('ru-RU',{day:'numeric',month:'short',hour:'2-digit',minute:'2-digit'})}</small></div>`).join(''):
+ `<div class="ai29-empty-chat">Это отдельный чат для темы «${ai29Text(ai29CurrentSnapshot().scopeTitle)}». Здесь будут сохраняться твои вопросы, выводы и планы.</div>`}</div>
+ <div class="ai29-prompts">${promptList.map(x=>`<button type="button" onclick="ai29Ask('${x}')">${x}</button>`).join('')}</div>
+ <form class="ai29-form" onsubmit="ai29SubmitChat(event)"><textarea id="ai29Input" aria-label="Сообщение помощнику" rows="1" maxlength="1500" placeholder="Спроси или запиши мысль…" onkeydown="ai29ChatKeydown(event)"></textarea><button id="ai29SendBtn" type="submit" aria-label="Отправить" ${ai29Busy?'disabled':''}>↑</button></form>
+ <p class="ai29-small-muted">${window.SKILLUP_AI_API_URL?'При подключённом сервере сообщение отправляется в выбранном контексте.':'Пока ответы демонстрационные и рассчитываются по данным приложения. Настоящую нейросеть подключим через бэкенд.'}</p></section>`;
+}
+function ai29NotebookPanel(){
+ const notes=ai29Notes();return `<details class="ai29-notebook" id="ai29Notebook" ${ai29NotesExpanded?'open':''} ontoggle="ai29NotesExpanded=this.open"><summary>✎ Заметки и выводы <span class="ai29-chat-count">${notes.length}</span></summary>
+ <div class="ai29-notebook-body"><textarea id="ai29NoteInput" maxlength="1200" placeholder="Что важно запомнить? Например: «Лучше учусь, когда говорю вслух»"></textarea><div class="ai29-notebook-controls"><button class="ai29-action ai29-action-main" type="button" onclick="ai29AddNote()">Сохранить заметку</button></div>
+ ${notes.length?notes.slice().reverse().map(note=>`<div class="ai29-note">${ai29Text(note.text)}<div class="ai29-note-meta"><span>${ai29HtmlDate(note.at)}</span><button type="button" onclick="ai29DeleteNote('${ai29Text(note.id)}')">Удалить</button></div></div>`).join(''):'<p class="ai29-small-muted">Пока нет заметок. Они сохраняются отдельно для каждой цели или направления.</p>'}</div></details>`;
+}
+function ai29Render(){
+ const el=document.getElementById('ai29Root');if(!el)return;
+ if(!ai29ValidScope(ai29State.active))ai29State.active='general';
+ const hide=!!devPendingPlan;el.hidden=hide;if(hide)return;
+ const scope=ai29Current(),item=ai29SelectedItem(),area=ai29SelectedArea();
+ el.innerHTML=`<div class="ai29-screen"><div class="ai29-hero"><div class="ai29-hero-top"><span class="ai29-kicker">Твой личный наставник</span><span class="ai29-demo">${window.SKILLUP_AI_API_URL?'API настроен':'Демо · без сервера'}</span></div><h2>Каждой цели — свой диалог</h2><p>Планируй, занимайся, подводи итоги. Переключайся между целями — история и записи не смешиваются.</p>
+ <label class="ai29-scope-label" for="ai29Context">Тема разговора</label><select class="ai29-select" id="ai29Context" onchange="ai29SelectContext(this.value)">${ai29ScopeList()}</select>
+ <div class="ai29-path">${area?`${ai29Text(area.icon)} ${ai29Text(area.name)} <span>›</span> ${item?ai29Text(devKindName(item.kind)):'Все планы'}`:'✦ Общее развитие'} ${item?`<button type="button" class="ai29-scope-jump" onclick="go('development');devOpenItem('${item.id}')">Открыть цель ↗</button>`:''}</div></div>
+ ${ai29ContextPanel()}${ai29LessonPanel()}${ai29ChatPanel()}${ai29NotebookPanel()}<div class="ai29-status-note">История и заметки хранятся в этом браузере. Для синхронизации устройств нужен бэкенд.</div></div>`;
+ const select=el.querySelector('#ai29Context');if(select)select.value=scope;
+ const stream=el.querySelector('#ai29ChatStream');if(stream)stream.scrollTop=stream.scrollHeight;
+}
+function ai29ToggleLesson(){ai29LessonExpanded=!ai29LessonExpanded;ai29Render();}
+function ai29ScrollToLesson(){ai29LessonExpanded=true;ai29Render();document.getElementById('ai29Session')?.scrollIntoView({behavior:'smooth',block:'start'});}
+function ai29SetRating(x){if(!['hard','normal','easy'].includes(x))return;const val=document.getElementById('ai29FeedbackText')?.value||'';ai29SessionRating=x;document.querySelectorAll('#ai29Session .ai29-feedback button').forEach(b=>{const selected=b.textContent.includes(x==='hard'?'трудно':x==='normal'?'самый раз':'легко');b.classList.toggle('is-selected',selected);b.setAttribute('aria-pressed',String(selected));});}
+function ai29CompleteSession(){
+ const item=ai29SelectedItem();if(!item)return;
+ const ctx=ai29Current(),today=devDateKey(),plan=ai29SessionPlan(item),note=(document.getElementById('ai29FeedbackText')?.value||'').trim().slice(0,400);
+ const arr=ai29Sessions();const idx=arr.findIndex(s=>s.date===today);
+ const x={date:today,rating:ai29SessionRating,note,moduleIndex:plan.moduleIndex||0,minutes:plan.minutes,at:Date.now()};
+ if(idx>=0)arr[idx]=x;else arr.push(x);
+ ai29State.sessions[ctx]=arr.sort((a,b)=>a.date.localeCompare(b.date)).slice(-370);
+ // Connect today's lesson to the first scheduled action, without unchecking existing work.
+ const actions=devHomeDueActions(item,new Date());const todo=actions.find(a=>!a.completed);
+ if(todo){if(todo.index===0){item.completed||={};item.completed[today]=true;}else{item.actionCompleted||={};item.actionCompleted[todo.id]||={};item.actionCompleted[todo.id][today]=true;}devPersist();devRenderHome();if(devView.level!=='overview')devRender();}
+ ai29AddMessage(ctx,'user',`Итог занятия (${plan.minutes} мин): ${x.rating==='easy'?'было легко':x.rating==='hard'?'было трудно':'в самый раз'}${note?'\n'+note:''}`);
+ ai29AddMessage(ctx,'assistant',x.rating==='hard'?'Демо-корректировка: на следующем занятии повторим тему в более спокойном темпе.':x.rating==='easy'?'Демо-корректировка: на следующем занятии перейдём к следующей теме и добавим самостоятельную практику.':'Демо-корректировка: завтра продолжим по плану, сохранив объём занятия.','demo');
+ ai29Write();ai29Render();toast(todo?'Занятие и действие отмечены':'Итог занятия сохранён');
+}
+function ai29ResetTodayFeedback(){const today=devDateKey(),x=ai29Sessions().find(s=>s.date===today);if(!x)return;ai29SessionRating=x.rating;const list=ai29Sessions().filter(s=>s.date!==today);ai29State.sessions[ai29Current()]=list;ai29Write();ai29Render();}
+function ai29AddNote(){const text=(document.getElementById('ai29NoteInput')?.value||'').trim();if(!text)return toast('Напиши заметку');const key=ai29Current(),a=ai29Notes();a.push({id:'n'+Date.now().toString(36)+Math.random().toString(36).slice(2,5),text:text.slice(0,1200),at:Date.now()});ai29State.notes[key]=a.slice(-70);ai29NotesExpanded=true;ai29Write();ai29Render();toast('Заметка сохранена');}
+function ai29DeleteNote(id){const k=ai29Current();ai29State.notes[k]=ai29Notes().filter(n=>n.id!==id);ai29NotesExpanded=true;ai29Write();ai29Render();}
+function ai29ChatKeydown(e){if(e.key==='Enter'&&!e.shiftKey){e.preventDefault();ai29SubmitChat(e);}}
+function ai29SubmitChat(e){if(e)e.preventDefault();const el=document.getElementById('ai29Input');const q=el?.value.trim();if(q)ai29Send(q);}
+function ai29Ask(q){ai29Send(q)}
+function ai29DemoReply(q,ctx){
+ const query=q.toLowerCase(),item=ai29SelectedItem(),area=ai29SelectedArea();
+ if(item){const a=ai29ProgressAnalysis(item),plan=ai29SessionPlan(item),step=devNextStep(item)?.title||'Закрепить достигнутое';
+  if(/анализ|прогресс|результат|итог|успех|подвед/.test(query))return `Прогресс «${item.title}»: ${devPercent(item)}%. Этапы: ${a.done}/${a.total}. За 7 дней выполнено ${a.week.done} из ${a.week.planned} запланированных действий. ${a.delta}.\n\nСледующая полезная проверка: «${step}». Оцени, что конкретно помешало или помогло на этой неделе.`;
+  if(/слож|трудн|коррект|пересмотр|не усп|пропуст|сниз|измени/.test(query))return `Для «${item.title}» предлагаю упрощение: оставь одно обязательное действие продолжительностью ${Math.max(5,Math.round(plan.minutes*.7))} минут и один измеримый результат. Если вчера было тяжело — завтра повтори текущую тему. Если легко — переходи к следующей. При необходимости измени этапы в «Развитии». Это демонстрационная рекомендация.`;
+  if(/сегод|занят|урок|план|следующ|обучен|англ/.test(query))return `Занятие на сегодня: «${plan.title}», ${plan.minutes} минут. В блоке выше уже есть четыре шага с временем и практикой. Следующий этап цели: «${step}». После занятия отметь сложность — она повлияет на следующий день. Это примерный план, не ответ нейросети.`;
+  return `Я вижу цель «${item.title}», прогресс ${devPercent(item)}% и следующий этап «${step}». Уточни, что было трудно и сколько времени ты действительно можешь уделять в день — это поможет скорректировать план. Пока это демонстрационный ответ по правилам, а не настоящий ИИ.`;
+ }
+ const scoped=ctx==='general'?devState.items:area?devInArea(area.id):[];
+ const done=scoped.filter(i=>devIsFinished(i)).length;
+ if(/анализ|результат|прогресс|итог|обзор/.test(query))return `В выбранной теме сейчас ${scoped.length} планов, полностью завершены ${done}. Чтобы понять причины успеха, открой конкретную цель: там доступны её этапы, история отметок и ежедневное занятие. Это обзор по сохранённым данным, без нейросети.`;
+ if(/цел|план|созда|сформулир|англ/.test(query))return `Сформулируй цель как результат, например: «Могу объясниться на английском в аэропорту и отеле». Затем добавь её в «Развитии»: маршрут и регулярные действия будут доступны в отдельном чате. В демоверсии планировщик использует готовые шаблоны.`;
+ return `Здесь можно вести общие записи о развитии. Сейчас у тебя ${scoped.length} активностей в выбранном контексте. Для персонального разбора выбери конкретную цель в списке выше. Произвольные ответы и глубокий анализ будут доступны после подключения ИИ.`;
+}
+async function ai29Request(mode,message){
+ const url=window.SKILLUP_AI_API_URL;if(!url)throw Error('API не настроен');
+ const ctx=ai29Current(),snap=ai29CurrentSnapshot();
+ const payload={mode,scope:ctx,message:message||'',context:snap,history:ai29Messages().slice(-20),initData:window.Telegram?.WebApp?.initData||''};
+ const response=await fetch(url,{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify(payload)});
+ if(!response.ok)throw Error('Сервер ответил '+response.status);
+ return response.json();
+}
+async function ai29Send(value){
+ const s=String(value||'').trim().slice(0,1500);if(!s||ai29Busy)return;
+ const ctx=ai29Current();ai29AddMessage(ctx,'user',s);ai29Busy=true;ai29Render();
+ try{
+  if(window.SKILLUP_AI_API_URL){const data=await ai29Request('chat',s);if(typeof data.answer!=='string'||!data.answer.trim())throw Error('Нет ответа');ai29AddMessage(ctx,'assistant',data.answer,'server');}
+  else ai29AddMessage(ctx,'assistant',ai29DemoReply(s,ctx),'demo');
+ }catch(e){ai29AddMessage(ctx,'assistant','Ответ сервера не получен ('+String(e.message).slice(0,100)+'). Твой вопрос сохранён. Проверь подключение и попробуй снова.','error');}
+ finally{ai29Busy=false;ai29Render();}
+}
+async function ai29GenerateServerLesson(){
+ const item=ai29SelectedItem();if(!item||!window.SKILLUP_AI_API_URL)return;
+ const button=document.querySelector('.ai29-server-btn');if(button){button.disabled=true;button.textContent='Создаём персональное занятие…';}
+ const ctx=ai29Current();
+ try{const data=await ai29Request('lesson','Составь занятие с учётом цели и предыдущих результатов');const phases=data.phases;
+  if(!Array.isArray(phases)||phases.length<2||phases.length>8||!phases.every(p=>Number.isInteger(p.minutes)&&p.minutes>=1&&typeof p.title==='string'&&typeof p.description==='string'))throw Error('Неподходящий формат плана');
+  const expected=ai29Minutes(item),total=phases.reduce((a,p)=>a+p.minutes,0);
+  if(total!==expected)throw Error('Сумма минут отличается от расписания');
+  ai29State.lessons[ctx+':'+devDateKey()]={title:String(data.title||'Персональное занятие').slice(0,150),minutes:expected,moduleIndex:ai29SessionPlan(item).moduleIndex||0,phases:phases.map(p=>({title:p.title.slice(0,100),description:p.description.slice(0,1000),minutes:p.minutes}))};
+  ai29Write();ai29LessonExpanded=true;ai29Render();toast('Занятие получено от ИИ');
+ }catch(e){toast('Не удалось получить занятие: '+String(e.message).slice(0,50));if(button){button.disabled=false;button.textContent='✦ Повторить запрос к ИИ';}}
+}
+function ai29StartGoalWizard(){
+ if(!devState.areas.length){go('development');devShowOverview();return toast('Для начала создай направление');}
+ document.getElementById('modalcontent').innerHTML=`<div class="eyebrow">НОВАЯ ЦЕЛЬ С ПОМОЩНИКОМ</div><h3>С чего хочешь начать?</h3><p>Опиши цель одной фразой. Помощник предложит черновик этапов и регулярного занятия, который можно изменить.</p>
+ <form class="dev-modal-form" onsubmit="ai29SubmitGoalWizard(event)"><label for="ai29NewGoalTitle">Моя цель</label><input id="ai29NewGoalTitle" class="dev-input" maxlength="85" required placeholder="Например, английский для путешествий">
+ <label for="ai29NewGoalArea">Направление</label><select id="ai29NewGoalArea" class="dev-input">${devState.areas.map(a=>`<option value="${ai29Text(a.id)}" ${a.id===ai29SelectedArea()?.id?'selected':''}>${ai29Text(a.icon)} ${ai29Text(a.name)}</option>`).join('')}</select>
+ <label for="ai29NewGoalMinutes">Минут ежедневно</label><select id="ai29NewGoalMinutes" class="dev-input"><option value="10">10 минут</option><option value="15">15 минут</option><option value="20" selected>20 минут</option><option value="30">30 минут</option><option value="45">45 минут</option></select>
+ <p class="dev-form-note">В деморежиме маршрут создаётся по шаблонам. Подключённый ИИ будет уточнять твой уровень и создавать персональные этапы.</p>
+ <button type="submit" class="primary">Предложить маршрут →</button></form>`;
+ showModal();
+}
+function ai29SubmitGoalWizard(event){
+ event.preventDefault();const title=(document.getElementById('ai29NewGoalTitle')?.value||'').trim(),areaId=document.getElementById('ai29NewGoalArea')?.value,minutes=Number(document.getElementById('ai29NewGoalMinutes')?.value||20);
+ if(!title||!devArea(areaId))return toast('Укажи цель и направление');
+ devPendingPlan={...devBuildPlan(title,'goal',minutes),areaId};closeModal();ai29Render();devRenderPlanner();window.scrollTo({top:0,behavior:'smooth'});
+}
+ai29Read();
+
+
+
 restoreFinanceDemoPack();restoreFinanceOperations();restoreFinanceAnalysis();renderFinanceEntries();document.querySelectorAll('#finance > *').forEach((item,i)=>item.style.setProperty('--finance-step',i));selectFinancePeriod('month');renderPlanTasks();renderProfileAreas();drawBars();updateTaskCount();updateNotificationBadge();updateFinanceTotals();renderSavingsGoal();renderFinanceAdvice();setInterval(()=>{if(document.getElementById('finance')?.classList.contains('active'))updateFinanceAdviceCountdown()},1000);document.getElementById('aiTip').style.display='none';document.getElementById('aiFab').classList.add('compact');requestAnimationFrame(()=>animatePremiumTab('home'));
-/* v25.1: Cloud sync diagnostics and resilient change tracking. */
-(function(){
- const API='https://skillup-api-production-3d6c.up.railway.app';
- const sections={development:['skillup_development_v16'],finances:['skillup_finance_operations_v11','skillup_finance_demo_pack_v18','skillup_finance_demo_goal_v18'],progress:['skillup-v22-progress-history']};
- const auth=window.Telegram?.WebApp?.initData||'';
- const status=document.createElement('div');status.id='skillup-cloud-status';
- Object.assign(status.style,{position:'fixed',zIndex:'99999',bottom:'85px',left:'50%',transform:'translateX(-50%)',padding:'8px 12px',borderRadius:'12px',font:'12px system-ui,sans-serif',background:'#182b22',color:'#b7f2cc',border:'1px solid #3c6b50',boxShadow:'0 4px 16px #0008',maxWidth:'92vw',textAlign:'center',pointerEvents:'none'});
- document.body.appendChild(status);
- function show(t,bad=false){status.textContent=t;status.style.color=bad?'#ffd2b5':'#b7f2cc';status.style.borderColor=bad?'#aa684d':'#3c6b50';console.info('[SkillUp Sync]',t);}
- if(!auth){show('⚠️ Локальный режим: Telegram не передал авторизацию',true);return;}
- const headers={'Content-Type':'application/json','X-Telegram-Init-Data':auth};
- const revisions={},hashes={};let hydrating=false,active=false,busy=false;
- function snapshot(kind){const items={};for(const key of sections[kind]){const value=localStorage.getItem(key);if(value!==null)items[key]=value;}return {items};}
- const digest=obj=>JSON.stringify(obj.items||{});
- const hasData=obj=>Object.keys(obj.items||{}).length>0;
- async function api(path,method='GET',body){const r=await fetch(API+path,{method,headers,body:body===undefined?undefined:JSON.stringify(body),cache:'no-store'});if(!r.ok){const e=new Error('HTTP '+r.status);e.status=r.status;throw e;}return r.json();}
- async function upload(kind){const payload=snapshot(kind),hash=digest(payload);if(hashes[kind]===hash||!hasData(payload))return false;
-   const result=await api('/api/v1/documents/'+kind,'PUT',{payload,revision:revisions[kind]??null});revisions[kind]=Number(result.revision);hashes[kind]=hash;return true;}
- async function flush(){if(!active||busy||hydrating)return;busy=true;try{let updated=false;for(const kind of Object.keys(sections)){if(await upload(kind))updated=true;}show(updated?'☁️ Данные сохранены в PostgreSQL':'☁️ Облако подключено');}
- catch(e){active=false;show('⚠️ Синхронизация остановлена: '+e.message,true);console.error('[SkillUp Sync]',e);}
- finally{busy=false;}}
- async function boot(){show('☁️ Проверяем Telegram и базу…');try{
-   await api('/api/v1/me');hydrating=true;let changed=false;
-   for(const kind of Object.keys(sections)){
-     const result=await api('/api/v1/documents/'+kind);const doc=result.document;
-     if(doc){revisions[kind]=Number(doc.revision);const items=doc.payload?.items||{};
-       for(const key of sections[kind]){const value=Object.prototype.hasOwnProperty.call(items,key)?items[key]:null;
-         if(value===null){if(localStorage.getItem(key)!==null){localStorage.removeItem(key);changed=true;}}
-         else if(typeof value==='string'&&localStorage.getItem(key)!==value){localStorage.setItem(key,value);changed=true;}}
-       hashes[kind]=digest(snapshot(kind));
-     }else{revisions[kind]=null;}
-   }
-   hydrating=false;
-   if(changed){show('☁️ Данные получены, обновляем экран…');location.reload();return;}
-   active=true;await flush();if(active){setInterval(flush,2200);document.addEventListener('visibilitychange',()=>{if(!document.hidden)flush();});}
- }catch(e){hydrating=false;show('⚠️ Нет облачной синхронизации: '+e.message,true);console.error('[SkillUp Sync]',e);}}
- boot();
+</script>
+<!-- SkillUp v29 stage-A: opt-in read-only auth diagnostics; normal UI is unchanged. -->
+<script>
+(()=>{
+  'use strict';
+  const API='https://skillup-api-production-3d6c.up.railway.app';
+  let overlay=null, lastTaps=[];
+  function field(label,value){return `${label}: ${value}`;}
+  function openDiagnostic(){
+    if(overlay){overlay.remove();overlay=null;}
+    overlay=document.createElement('div');
+    overlay.id='skillup-auth-diagnostic';
+    overlay.setAttribute('role','dialog');
+    overlay.setAttribute('aria-label','Диагностика Telegram авторизации');
+    overlay.style.cssText='position:fixed;inset:0;z-index:999999;background:#000c;display:flex;align-items:center;justify-content:center;padding:16px';
+    const panel=document.createElement('div');
+    panel.style.cssText='width:min(100%,460px);background:#142019;color:#ebfff1;border:1px solid #3b7654;border-radius:18px;padding:18px;box-shadow:0 16px 40px #0009;font:14px/1.5 system-ui,sans-serif;max-height:85vh;overflow:auto';
+    const heading=document.createElement('div');
+    heading.textContent='SkillUp · проверка подключения';
+    heading.style.cssText='font-size:18px;font-weight:800;margin-bottom:7px';
+    const description=document.createElement('p');
+    description.textContent='Тест только читает статус Telegram и отправляет подписанные данные авторизации в твой SkillUp API. Не изменяет локальные данные, цели и финансы. При успешной авторизации /me может создать или обновить профиль пользователя в БД.';
+    description.style.cssText='font-size:12px;opacity:.76;margin:0 0 12px';
+    const report=document.createElement('pre');
+    report.id='skillup-auth-report';
+    report.style.cssText='white-space:pre-wrap;word-break:break-word;padding:12px;border-radius:10px;background:#0b130e;border:1px solid #274533;color:#c7f6d4;font:12px/1.65 ui-monospace,SFMono-Regular,monospace';
+    const actions=document.createElement('div');
+    actions.style.cssText='display:flex;gap:10px;margin-top:13px';
+    function action(title,click){const b=document.createElement('button');b.type='button';b.textContent=title;b.style.cssText='flex:1;border:1px solid #4f8b68;background:#234a35;color:#e5fff0;border-radius:11px;padding:10px;cursor:pointer;font-weight:700';b.addEventListener('click',click);return b;}
+    actions.append(action('Повторить проверку',check),action('Закрыть',()=>{overlay.remove();overlay=null;}));
+    panel.append(heading,description,report,actions);overlay.append(panel);document.body.append(overlay);
+    overlay.addEventListener('click',e=>{if(e.target===overlay){overlay.remove();overlay=null;}});
+    check();
+    async function check(){
+      if(!overlay)return;
+      const tg=window.Telegram?.WebApp;
+      const raw=typeof tg?.initData==='string'?tg.initData:'';
+      const params=new URLSearchParams(raw);
+      const authDate=params.get('auth_date');
+      const age=authDate&&/^\d+$/.test(authDate)?Math.round((Date.now()/1000-Number(authDate))/60):null;
+      let reportLines=[
+        field('Страница SkillUp',location.hostname),
+        field('Telegram SDK',tg?'найден':'ОТСУТСТВУЕТ'),
+        field('Платформа',String(tg?.platform||'неизвестно')),
+        field('initData',raw?'есть':'ОТСУТСТВУЕТ'),
+        field('Подпись hash',params.has('hash')?'есть':'отсутствует'),
+        field('Возраст подписи',age===null?'неизвестно':`${age} мин`),
+        field('API',new URL(API).hostname)
+      ];
+      const update=(message)=>{if(overlay)report.textContent=reportLines.join('\n')+'\n\n'+message;};
+      if(!tg){update('Telegram SDK не найден. Открой приложение именно внутри Mini App.');return;}
+      if(!raw){update('Telegram не передал initData. Проверь запуск через кнопку бота и реальный контекст WebView.');return;}
+      update('Проверяем /api/v1/me…');
+      const controller=new AbortController();
+      const timeout=setTimeout(()=>controller.abort(),12000);
+      try{
+        const response=await fetch(API+'/api/v1/me',{
+          method:'GET',cache:'no-store',headers:{'X-Telegram-Init-Data':raw},signal:controller.signal
+        });
+        if(response.ok){
+          const data=await response.json();
+          update('HTTP '+response.status+' ✅ Авторизация подтверждена.\nПользователь в БД: '+(data?.user?.id?'найден':'ответ без ID'));
+        }else if(response.status===401){
+          update('HTTP 401 ❌ API отверг Telegram initData.\nЕсли hash присутствует и подпись свежая — проверь токен ТОГО ЖЕ бота в Railway и логи API.');
+        }else if(response.status===503){
+          update('HTTP 503 ❌ API/база не готовы либо TELEGRAM_BOT_TOKEN отсутствует в сервисе API.');
+        }else{
+          update('HTTP '+response.status+' ❌ Запрос не прошёл. Проверь Deploy API и настройки CORS.');
+        }
+      }catch(error){
+        update('Сетевой сбой / CORS / таймаут ('+(error?.name==='AbortError'?'timeout':'fetch error')+').\nПроверь доступность API и CORS_ORIGINS.');
+      }finally{clearTimeout(timeout);}
+    }
+  }
+  window.skillupOpenAuthDiagnostics=openDiagnostic;
+  const logo=document.querySelector('.brand .brandname');
+  if(logo)logo.addEventListener('click',()=>{
+    const now=Date.now();lastTaps=lastTaps.filter(t=>now-t<4500);lastTaps.push(now);
+    if(lastTaps.length>=5){lastTaps=[];openDiagnostic();}
+  });
+  if(new URLSearchParams(location.search).get('skillup_debug')==='1')openDiagnostic();
 })();
 </script>
 </body></html>
