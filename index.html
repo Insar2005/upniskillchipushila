@@ -827,8 +827,8 @@ textarea.dev-input{resize:vertical;min-height:95px}
 </section>
 <section class="screen" id="finance">
  <h1 class="page-title section-main-title">Финансы</h1>
- <div class="card finance-hero"><div class="cardhead"><span class="cardtitle">Общий баланс</span><button class="iconbtn" onclick="toast('Баланс учитывает все добавленные операции')" aria-label="Информация о балансе">ⓘ</button></div><div class="finance-balance" id="financeBalance">42 500 ₽</div><div class="finance-hero-foot" style="justify-content:flex-end"><button class="finance-add" onclick="startVoiceFinance()">🎙 Голосовая операция</button></div></div>
- <div class="finance-stats"><div class="card finance-stat"><div class="finance-stat-icon income-icon">↘</div><div class="muted finance-label">Доходы · месяц</div><b class="finance-income" id="financeIncome">65 000 ₽</b><button class="secondary finance-stat-action" onclick="openFinanceEntry('Доход')">＋ Добавить доход</button></div><div class="card finance-stat"><div class="finance-stat-icon expense-icon">↗</div><div class="muted finance-label">Расходы · месяц</div><b class="finance-expense" id="financeExpenses">22 500 ₽</b><button class="secondary finance-stat-action" onclick="openFinanceEntry('Расход')">＋ Добавить расход</button></div></div>
+ <div class="card finance-hero"><div class="cardhead"><span class="cardtitle">Общий баланс</span><button class="iconbtn" onclick="toast('Баланс учитывает все добавленные операции')" aria-label="Информация о балансе">ⓘ</button></div><div class="finance-balance" id="financeBalance">0 ₽</div><div class="finance-hero-foot" style="justify-content:flex-end"><button class="finance-add" onclick="startVoiceFinance()">🎙 Голосовая операция</button></div></div>
+ <div class="finance-stats"><div class="card finance-stat"><div class="finance-stat-icon income-icon">↘</div><div class="muted finance-label">Доходы · месяц</div><b class="finance-income" id="financeIncome">0 ₽</b><button class="secondary finance-stat-action" onclick="openFinanceEntry('Доход')">＋ Добавить доход</button></div><div class="card finance-stat"><div class="finance-stat-icon expense-icon">↗</div><div class="muted finance-label">Расходы · месяц</div><b class="finance-expense" id="financeExpenses">0 ₽</b><button class="secondary finance-stat-action" onclick="openFinanceEntry('Расход')">＋ Добавить расход</button></div></div>
  <div class="card savings-card" id="savingsCard"><div class="cardhead"><div><div class="cardtitle">Цель накоплений</div><div class="muted" style="font-size:11px;margin-top:4px">Создай цель и следи за прогрессом</div></div></div><button class="primary savings-create" onclick="openSavingsGoal()">＋ Добавить цель накоплений</button></div>
  <div class="card expense-breakdown"><div class="cardhead"><span class="cardtitle">Подробнее о расходах</span><div class="expense-period-control" id="expensePeriodControl"><button type="button" class="expense-period-trigger" id="financePeriodBtn" aria-haspopup="listbox" aria-controls="financePeriodMenu" aria-expanded="false" onclick="toggleFinancePeriodMenu()"><span id="financePeriodLabel">За месяц</span><span class="period-chevron" aria-hidden="true">⌄</span></button><div class="expense-period-menu" id="financePeriodMenu" role="listbox" aria-label="Период расходов" hidden><button type="button" class="expense-period-option" role="option" data-period="day" aria-selected="false" onclick="selectFinancePeriod('day')">За день</button><button type="button" class="expense-period-option" role="option" data-period="week" aria-selected="false" onclick="selectFinancePeriod('week')">За неделю</button><button type="button" class="expense-period-option" role="option" data-period="month" aria-selected="true" onclick="selectFinancePeriod('month')">За месяц</button><button type="button" class="expense-period-option" role="option" data-period="quarter" aria-selected="false" onclick="selectFinancePeriod('quarter')">За 3 месяца</button><button type="button" class="expense-period-option" role="option" data-period="year" aria-selected="false" onclick="selectFinancePeriod('year')">За год</button></div></div></div><div class="expense-chart-wrap" id="expenseChartWrap" aria-live="polite"></div><div class="expense-chart-caption">Распределение расходов по категориям за выбранный период.</div></div>
  
@@ -842,11 +842,11 @@ textarea.dev-input{resize:vertical;min-height:95px}
  </section>
 <section class="screen" id="profile">
  <div class="eyebrow">ТВОЁ ПРОСТРАНСТВО</div><h1 class="page-title">Профиль</h1><p class="page-sub">Настрой SkillUp под себя.</p>
- <div class="card"><div style="display:flex;align-items:center;gap:13px"><div class="avatar">S</div><div><div style="font-size:16px;font-weight:800">Мой профиль</div><div class="muted" style="font-size:12px;margin-top:3px">На пути к лучшей версии себя</div></div><span class="pill" style="margin-left:auto">DEMO</span></div></div>
+ <div class="card"><div style="display:flex;align-items:center;gap:13px"><div class="avatar">S</div><div><div style="font-size:16px;font-weight:800">Мой профиль</div><div class="muted" style="font-size:12px;margin-top:3px">На пути к лучшей версии себя</div></div><span class="pill" style="margin-left:auto">Локально</span></div></div>
  <div class="card"><div class="cardtitle" style="margin-bottom:6px">Мои направления</div><div id="profileAreas"></div><button class="secondary" style="width:100%;margin-top:12px" onclick="go('development');devShowOverview()">Настроить в Развитии →</button></div>
  <div class="card demo-profile-card"><div class="cardhead"><span class="cardtitle">Тестовые сценарии SkillUp</span><span class="pill">6 вариантов</span></div><p class="demo-profile-caption">Попробуй шесть готовых жизненных сценариев: цели, привычки, доходы, расходы и накопления.</p><button type="button" class="secondary demo-profile-button" onclick="demoOpenPicker()">✧ Заполнить демо-данными</button><p class="demo-profile-note">При загрузке заменятся цели, привычки и финансовые демоданные. Сначала покажем предупреждение.</p></div>
  <div class="card"><div class="profile-row"><div class="area-icon">◈</div><div class="grow"><div class="rowtitle">Напоминания</div><div class="rowdesc">Мягкие напоминания о целях</div></div><input type="checkbox" checked onchange="toast(this.checked?'Напоминания включены':'Напоминания выключены')"></div><div class="profile-row"><div class="area-icon">◐</div><div class="grow"><div class="rowtitle">Тёмная тема</div><div class="rowdesc">Минималистичный тёмный интерфейс</div></div><span class="pill">Вкл.</span></div></div>
- <p class="muted" style="font-size:10px;text-align:center">Это прототип. Данные развития и финансы хранятся локально в этом браузере, а не на сервере.</p>
+ <p class="muted" style="font-size:10px;text-align:center">Авторизация Telegram подключена. Цели, финансы и история ИИ пока сохраняются локально до включения облачной синхронизации.</p>
 </section>
 </main>
 </div>
@@ -857,19 +857,24 @@ textarea.dev-input{resize:vertical;min-height:95px}
 <div class="modalback" id="modalback" onclick="if(event.target===this)closeModal()"><div class="modal"><div class="close-row"><button class="close" onclick="closeModal()">×</button></div><div id="modalcontent"></div></div></div>
 <script>
 const tg=window.Telegram?.WebApp;
-if(tg){tg.ready();tg.expand();try{tg.setHeaderColor('#090d0b');tg.setBackgroundColor('#090d0b');if(tg.requestFullscreen)tg.requestFullscreen()}catch(e){}}
+// v29.1: respect BotFather Fullsize; do not force Telegram fullscreen.
+if(tg){
+  tg.ready();
+  try{tg.expand();}catch(e){}
+  try{tg.setHeaderColor('#090d0b');tg.setBackgroundColor('#090d0b');}catch(e){}
+  // Official Telegram API v7.7+: keep vertical page scrolling, prevent swipe-to-minimize conflicts.
+  try{if(typeof tg.disableVerticalSwipes==='function'&&(!tg.isVersionAtLeast||tg.isVersionAtLeast('7.7')))tg.disableVerticalSwipes();}catch(e){}
+  // Leave fullscreen mode if an earlier deployment requested it.
+  try{if(tg.isFullscreen&&typeof tg.exitFullscreen==='function')tg.exitFullscreen();}catch(e){}
+}
 let completed=new Set([0]), period=0;
 const taskData=[['Повторить 10 английских слов','Развитие навыков · 10 минут','09:00'],['Отложить 500 ₽ в накопления','Финансы · 2 минуты','18:00'],['Запланировать главное дело на завтра','Дисциплина · 5 минут','21:00']];
 const areaData={english:{name:'Английский',icon:'文',percent:68,desc:'Уровень A2 · цель B1',plan:'15 минут английского в день',tip:'Ты уже знаешь базовые конструкции. Сосредоточься на коротких диалогах и повторении слов в контексте.'},finance:{name:'Финансы',icon:'₽',percent:42,desc:'Цель: накопления',plan:'Записывать расходы каждый день',tip:'Начни с простого: фиксируй расходы 7 дней. Так станет понятнее, где можно оптимизировать бюджет.'},discipline:{name:'Дисциплина',icon:'◷',percent:81,desc:'5 дней подряд',plan:'Соблюдать утреннюю рутину',tip:'Твоя сильная сторона — регулярность. Не усложняй план: лучше выполнить минимум, чем перегрузиться.'},health:{name:'Здоровье',icon:'✳',percent:56,desc:'Активность и восстановление',plan:'20 минут прогулки',tip:'Добавь немного движения в привычный день. Стабильность важнее идеального плана.'},reading:{name:'Чтение',icon:'▤',percent:35,desc:'Цель: 12 книг за год',plan:'Прочитать 5 страниц',tip:'Пять страниц в день — уже больше 150 страниц в месяц. Сделай книгу частью вечернего ритуала.'},business:{name:'Карьера',icon:'↗',percent:49,desc:'Развитие навыков',plan:'30 минут на ключевой навык',tip:'Выбери один навык, который сильнее всего приблизит тебя к следующему шагу в карьере.'}};
 let activeAreas=['english','finance','discipline','health'];
-const notifications=[
- {id:1,title:'Пора проверить прогресс по английскому',desc:'Прошла неделя — оцени, что стало легче, и обнови план обучения.',time:Date.now()-1000*60*18,read:false},
- {id:2,title:'Небольшой шаг к финансовой цели',desc:'Сегодня можно проверить накопления и скорректировать недельный план.',time:Date.now()-1000*60*60*4,read:false},
- {id:3,title:'План на день готов',desc:'Три коротких действия помогут поддерживать движение к целям.',time:Date.now()-1000*60*60*27,read:true},
- {id:4,title:'Ты держишь хороший ритм',desc:'Последние задачи выполнены регулярно. Не увеличивай нагрузку слишком резко.',time:Date.now()-1000*60*60*52,read:true}
-];
+// Do not simulate notifications for a new user. Real reminders require server-side scheduling.
+const notifications=[];
 function updateNotificationBadge(){const unread=notifications.some(n=>!n.read);document.getElementById('notifyBtn').classList.toggle('has-unread',unread);document.getElementById('notifyDot').style.display=unread?'block':'none'}
-function openNotifications(){const box=document.getElementById('modalback');box.classList.add('notifications-back','show');const el=document.getElementById('modalcontent');const sorted=[...notifications].sort((a,b)=>(Number(a.read)-Number(b.read))||(b.time-a.time));el.innerHTML=`<h3>Уведомления</h3><p>Новые события и подсказки по твоему прогрессу.</p><div class="notification-actions"><button class="secondary" onclick="markAllRead()">Прочитать все</button><button class="secondary" onclick="closeModal()">Закрыть</button></div><div class="notify-list">${sorted.map(n=>`<button class="notification ${n.read?'read':''}" onclick="readNotification(${n.id})"><div class="cardhead"><span class="notification-title">${n.title}</span>${n.read?'':'<span class="pill">Новое</span>'}</div><div class="notification-desc">${n.desc}</div><div class="notification-time">${formatNotificationTime(n.time)} · ${n.read?'Прочитано':'Не прочитано'}</div></button>`).join('')}</div>`;}
+function openNotifications(){const box=document.getElementById('modalback');box.classList.add('notifications-back','show');const el=document.getElementById('modalcontent');const sorted=[...notifications].sort((a,b)=>(Number(a.read)-Number(b.read))||(b.time-a.time));el.innerHTML=`<h3>Уведомления</h3><p>Новые события и подсказки по твоему прогрессу.</p><div class="notification-actions"><button class="secondary" onclick="markAllRead()">Прочитать все</button><button class="secondary" onclick="closeModal()">Закрыть</button></div><div class="notify-list">${!sorted.length?'<p class="muted">Пока нет уведомлений.</p>':''}${sorted.map(n=>`<button class="notification ${n.read?'read':''}" onclick="readNotification(${n.id})"><div class="cardhead"><span class="notification-title">${n.title}</span>${n.read?'':'<span class="pill">Новое</span>'}</div><div class="notification-desc">${n.desc}</div><div class="notification-time">${formatNotificationTime(n.time)} · ${n.read?'Прочитано':'Не прочитано'}</div></button>`).join('')}</div>`;}
 function formatNotificationTime(t){const d=new Date(t);return d.toLocaleDateString('ru-RU',{day:'numeric',month:'short'})+' · '+d.toLocaleTimeString('ru-RU',{hour:'2-digit',minute:'2-digit'})}
 function readNotification(id){const n=notifications.find(x=>x.id===id);if(n)n.read=true;openNotifications();updateNotificationBadge()}
 function markAllRead(){notifications.forEach(n=>n.read=true);openNotifications();updateNotificationBadge();toast('Все уведомления прочитаны')}
@@ -883,7 +888,7 @@ function switchTopic(topic){
  ai29SelectContext(area?'area:'+area.id:'general');
 }
 function addFinanceEntry(){const amount=Number(document.getElementById('financeAmount').value);const type=document.getElementById('financeType').value;if(!amount||amount<=0){toast('Укажи сумму');return}const text=(type==='Расход'?'Запиши расход ':'Запиши доход ')+amount+' рублей';sendPrompt(text);document.getElementById('financeAmount').value=''}
-let financeBalanceValue=42500, financeIncomeValue=65000, financeExpenseValue=22500, financeGoal=null, financePeriod='month';
+let financeBalanceValue=0, financeIncomeValue=0, financeExpenseValue=0, financeGoal=null, financePeriod='month';
 function rub(n){return Math.round(n).toLocaleString('ru-RU')+' ₽'}
 function updateFinanceTotals(){document.getElementById('financeBalance').textContent=rub(financeBalanceValue);document.getElementById('financeIncome').textContent=rub(financeIncomeValue);document.getElementById('financeExpenses').textContent=rub(financeExpenseValue)}
 function focusFinanceForm(){startVoiceFinance()}
@@ -1276,24 +1281,8 @@ const expenseCategories=[
   {name:'Транспорт',color:'#1F6848'}
 ];
 function monthDemoDate(monthShift,day){const now=new Date(),date=new Date(now.getFullYear(),now.getMonth()+monthShift,1,12);const lastDay=new Date(date.getFullYear(),date.getMonth()+1,0).getDate();const targetDay=Math.min(day,lastDay,monthShift===0?now.getDate():lastDay);date.setDate(Math.max(1,targetDay));date.setHours(0,0,0,0);return date}
-const financeTransactions=[
-  {category:'Продукты',amount:1250,date:monthDemoDate(0,new Date().getDate())},
-  {category:'Продукты',amount:2700,date:monthDemoDate(0,18)},
-  {category:'Продукты',amount:3100,date:monthDemoDate(0,9)},
-  {category:'Продукты',amount:2150,date:monthDemoDate(0,2)},
-  {category:'Еда вне дома',amount:1700,date:monthDemoDate(0,20)},
-  {category:'Еда вне дома',amount:1900,date:monthDemoDate(0,12)},
-  {category:'Еда вне дома',amount:1800,date:monthDemoDate(0,5)},
-  {category:'Жилье',amount:5600,date:monthDemoDate(0,1)},
-  {category:'Транспорт',amount:850,date:monthDemoDate(0,19)},
-  {category:'Транспорт',amount:650,date:monthDemoDate(0,11)},
-  {category:'Транспорт',amount:800,date:monthDemoDate(0,4)}
-];
-// История для просмотра квартала и года (условные демонстрационные операции).
-for(let delta=-11;delta<0;delta++){
-  const seed=Math.abs(delta);
-  expenseCategories.forEach((category,index)=>financeTransactions.push({category:category.name,amount:[6700,3100,5600,1400][index]+((seed*173+index*331)%1600),date:monthDemoDate(delta,index*6+3)}));
-}
+// New accounts start empty. The six optional demo packs supply their own transactions.
+const financeTransactions=[];
 
 /* Локальный журнал пользовательских операций. Демонстрационная история остаётся отдельной. */
 const financeStorageKey='skillup_finance_operations_v11';
@@ -1305,10 +1294,7 @@ let financeDemoIncomeEntries=null;
 let financeDemoRecentEntries=null;
 function renderFinanceEntries(){
  const el=document.getElementById('financeEntries');if(!el)return;
- const defaults=[
-  {type:'Расход',category:'Продукты',amount:1250,date:new Date().toISOString()},
-  {type:'Доход',category:'Зарплата',amount:35000,date:new Date(Date.now()-86400000).toISOString()}
- ];
+ const defaults=[]; // only show entries the user saved or explicitly loaded as demo
  const combined=[...financeSavedEntries,...(financeDemoRecentEntries||defaults)].sort((a,b)=>new Date(b.date)-new Date(a.date)).slice(0,9);
  el.innerHTML=combined.length?combined.map(financeEntryHtml).join(''):'<div class="empty">Пока нет операций</div>';
 }
@@ -1492,12 +1478,8 @@ function financeWaitDuration(ms){
 function financePeriodIncomeEntries(){
   const today=new Date();
   const yesterday=new Date(today.getFullYear(),today.getMonth(),today.getDate()-1,12,0,0,0);
-  // Эти 65 000 ₽ уже показаны в демонстрационной карточке «Доходы · месяц».
-  // Не добавляем отдельные доходы за предыдущие месяцы — такой истории в версии 14 нет.
-  const examples=financeDemoIncomeEntries||[
-    {amount:35000,date:yesterday},
-    {amount:30000,date:monthDemoDate(0,3)}
-  ];
+  // Only verified locally entered income and explicitly selected demo scenarios count.
+  const examples=financeDemoIncomeEntries||[];
   const added=financeSavedEntries.filter(item=>item.type==='Доход').map(item=>({amount:item.amount,date:new Date(item.date)}));
   return examples.concat(added);
 }
@@ -1532,7 +1514,7 @@ function buildFinanceAdvice(stats){
     return insights;
   }
   if(!financeDemoPackId&&['quarter','year'].includes(stats.period)){
-    insights.push({title:'История доходов неполная',body:'В демоверсии за прошлые месяцы есть примерные расходы, но нет полной истории зарплаты. Показанная разница не доказывает дефицит бюджета. Добавь реальные поступления для точного сравнения.'});
+    insights.push({title:'Проверь полноту истории',body:'Обзор учитывает только внесённые операции. Добавь прошлые доходы и расходы, если хочешь сравнить весь период.'});
   }else if(income>0){
     if(difference>=0) insights.push({title:'Баланс за период',body:`По учтённым операциям поступления превышают расходы на ${rub(difference)}. Это не обязательно свободные деньги — проверь, всё ли внесено в учёт.`});
     else insights.push({title:'Расходы выше поступлений',body:`Расходы превысили учтённые поступления на ${rub(-difference)}. Проверь крупные категории и полноту записей о доходах, прежде чем менять бюджет.`});
@@ -1675,7 +1657,7 @@ function devSeed(){return {
  ], version:16};}
 function devLoad(){try{let saved=JSON.parse(localStorage.getItem(DEV_STORAGE_KEY));if(saved&&Array.isArray(saved.areas)&&Array.isArray(saved.items)){
  saved.items.forEach(i=>{if(!i.completed||typeof i.completed!=='object')i.completed={};if(!Array.isArray(i.steps))i.steps=[];});return saved;
- }}catch(e){}return devSeed()}
+ }}catch(e){}return {areas:[],items:[],version:29}}
 // Six cohesive demo packs: Development and Finance change together with explicit confirmation.
 const DEV_DEMO_PRESETS=[
  {id:'balance',icon:'✳',title:'Баланс жизни',desc:'Несколько направлений, ежедневная цель, навык и привычка.'},
