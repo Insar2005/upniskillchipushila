@@ -47,15 +47,85 @@
     localStorage.setItem(key,JSON.stringify({createdAt:new Date().toISOString(),reason,entries}));
     return key;
   }
-  function downloadLocalExport(){
+  function showBackupCopyFallback(json, fileName){
+    // A last-resort export for restricted Telegram iOS WebViews: no data upload.
+    const existing=document.getElementById('skillup-backup-fallback');
+    if(existing)existing.remove();
+    const overlay=document.createElement('div');
+    overlay.id='skillup-backup-fallback';
+    overlay.setAttribute('role','dialog');
+    overlay.setAttribute('aria-modal','true');
+    overlay.setAttribute('aria-label','Резервная копия SkillUp');
+    overlay.style.cssText='position:fixed;inset:0;z-index:1000000;background:rgba(0,0,0,.82);display:flex;align-items:center;justify-content:center;padding:15px';
+    const box=document.createElement('div');
+    box.style.cssText='width:min(100%,480px);max-height:87vh;overflow:auto;background:#15231b;border:1px solid #3b7654;border-radius:20px;padding:20px;color:#effff4;font:14px/1.5 system-ui,sans-serif';
+    const title=document.createElement('h3');
+    title.textContent='Резервная копия SkillUp';
+    title.style.cssText='font-size:20px;margin:0 0 8px';
+    const message=document.createElement('p');
+    message.textContent='Telegram на этом устройстве не поддержал сохранение JSON-файла. Скопируй данные ниже в Заметки или текстовый редактор и сохрани под именем '+fileName+'. В копии есть личные данные: не отправляй её посторонним.';
+    message.style.cssText='opacity:.85;margin:0 0 12px';
+    const area=document.createElement('textarea');
+    area.value=json;
+    area.readOnly=true;
+    area.setAttribute('aria-label','JSON резервной копии');
+    area.style.cssText='box-sizing:border-box;width:100%;height:160px;background:#08130e;color:#c3efd1;border:1px solid #3b7654;border-radius:10px;padding:9px;font:11px/1.35 monospace';
+    const info=document.createElement('p');
+    info.style.cssText='font-size:12px;opacity:.8;min-height:18px';
+    const buttons=document.createElement('div');
+    buttons.style.cssText='display:flex;gap:8px;flex-wrap:wrap';
+    function makeButton(text,handler){
+      const b=document.createElement('button');b.type='button';b.textContent=text;
+      b.style.cssText='flex:1;min-width:115px;background:#214c35;border:1px solid #548c69;border-radius:11px;color:#e7fff0;padding:12px;font-weight:700';
+      b.addEventListener('click',handler);return b;
+    }
+    const selectText=()=>{area.focus();area.select();area.setSelectionRange(0,area.value.length);};
+    buttons.append(
+      makeButton('Скопировать JSON',async()=>{
+        try{
+          if(!navigator.clipboard?.writeText)throw new Error('Clipboard unavailable');
+          await navigator.clipboard.writeText(json);
+          info.textContent='Скопировано. Сохрани содержимое как '+fileName;
+        }catch(e){
+          selectText();
+          try{if(document.execCommand?.('copy')){info.textContent='Скопировано. Сохрани содержимое как '+fileName;return;}}catch(_){}
+          info.textContent='Текст выделен. Нажми «Копировать» в меню iPhone.';
+        }
+      }),
+      makeButton('Выделить текст',()=>{selectText();info.textContent='Теперь выбери «Копировать» в меню iPhone.';}),
+      makeButton('Закрыть',()=>overlay.remove())
+    );
+    box.append(title,message,area,info,buttons);overlay.append(box);document.body.append(overlay);
+  }
+  async function downloadLocalExport(){
     const keys=[KEYS.development,KEYS.finances,KEYS.savings,KEYS.demo,'skillup_finance_demo_goal_v18','skillup-v22-progress-history','skillup_ai_workspace_v29'];
     const entries=Object.fromEntries(keys.map(k=>[k,localStorage.getItem(k)]));
     const json=JSON.stringify({format:'skillup-local-backup-v1',createdAt:new Date().toISOString(),entries},null,2);
+    const fileName='skillup-local-backup-'+new Date().toISOString().slice(0,10)+'.json';
+    const telegramIOS=window.Telegram?.WebApp?.platform==='ios';
+
+    // Web Share transfers a local File to the OS share sheet, not to our API.
+    // On iPhone: choose "Save to Files" from the share sheet.
+    if(typeof File==='function' && typeof navigator.share==='function' && typeof navigator.canShare==='function'){
+      const file=new File([json],fileName,{type:'application/json'});
+      let canShare=false;
+      try{canShare=navigator.canShare({files:[file]});}catch(e){}
+      if(canShare){
+        try{await navigator.share({files:[file],title:'Резервная копия SkillUp'});return;}
+        catch(e){
+          if(e?.name==='AbortError')return; // User cancelled the share sheet.
+          if(telegramIOS){showBackupCopyFallback(json,fileName);return;}
+        }
+      }
+    }
+    if(telegramIOS){showBackupCopyFallback(json,fileName);return;}
+
+    // Browser download remains for desktop / other supported platforms.
     const blob=new Blob([json],{type:'application/json'});
     const url=URL.createObjectURL(blob);
-    const a=document.createElement('a');a.href=url;a.download='skillup-local-backup-'+new Date().toISOString().slice(0,10)+'.json';
+    const a=document.createElement('a');a.href=url;a.download=fileName;
     document.body.append(a);a.click();a.remove();
-    setTimeout(()=>URL.revokeObjectURL(url),1000);
+    setTimeout(()=>URL.revokeObjectURL(url),30000);
   }
   async function api(path,options={}){
     const initData=window.Telegram?.WebApp?.initData;
@@ -250,9 +320,9 @@
     actions=document.createElement('div');
     const note=document.createElement('p');note.className='muted';note.style.cssText='font-size:11px;margin-top:10px';note.textContent='Пока синхронизируются цели, навыки, привычки и пользовательские финансовые операции. Чаты ИИ и история прогресса — следующим этапом. Демоданные не отправляются автоматически.';
     const exportButton=document.createElement('button');
-    exportButton.type='button';exportButton.className='secondary';exportButton.textContent='↓ Скачать локальную резервную копию';
+    exportButton.type='button';exportButton.className='secondary';exportButton.textContent='↓ Сохранить локальную резервную копию';
     exportButton.style.cssText='width:100%;margin-top:11px;padding:11px;font-size:12px';
-    exportButton.addEventListener('click',downloadLocalExport);
+    exportButton.addEventListener('click',()=>void downloadLocalExport());
     panel.append(h,status,details,actions,exportButton,note);
     const demo=profile.querySelector('.demo-profile-card');profile.insertBefore(panel,demo||profile.firstChild);
     const pill=profile.querySelector('.pill');badge=pill;markBadge('Локально');
