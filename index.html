@@ -1268,7 +1268,7 @@ function openSavingsGoal(){
   showModal();
 }
 function groupDigits(n){return String(Math.floor(n)).replace(/\B(?=(\d{3})+(?!\d))/g,' ')}
-function saveSavingsGoal(){const name=document.getElementById('goalName').value.trim()||'Моя цель';const target=moneyValue('goalTarget');const saved=moneyValue('goalSaved');if(target<=0||saved<0){toast('Проверь суммы');return}financeGoal={name,target,saved:Math.min(saved,target)};persistFinanceDemoGoal();renderSavingsGoal();closeModal();toast('Цель накоплений сохранена (демо)')}
+function saveSavingsGoal(){const name=document.getElementById('goalName').value.trim()||'Моя цель';const target=moneyValue('goalTarget');const saved=moneyValue('goalSaved');if(target<=0||saved<0){toast('Проверь суммы');return}financeGoal={name,target,saved:Math.min(saved,target)};persistFinanceDemoGoal();renderSavingsGoal();closeModal();toast('Цель накоплений обновлена')}
 function removeSavingsGoal(){financeGoal=null;persistFinanceDemoGoal();renderSavingsGoal();closeModal();toast('Цель удалена')}
 function renderSavingsGoal(){const el=document.getElementById('savingsCard');if(!financeGoal){el.innerHTML='<div class="cardhead"><div><div class="cardtitle">Цель накоплений</div><div class="muted" style="font-size:11px;margin-top:4px">Создай цель и следи за прогрессом</div></div></div><button class="primary savings-create" onclick="openSavingsGoal()">＋ Добавить цель накоплений</button>';return}const pct=Math.min(100,Math.round(financeGoal.saved/financeGoal.target*100));el.innerHTML=`<div class="cardhead"><div><div class="cardtitle">${escapeHtml(financeGoal.name)}</div><div class="muted" style="font-size:11px;margin-top:4px">Цель накоплений</div></div></div><div style="display:flex;align-items:baseline;gap:5px;margin-top:15px"><b style="font-size:24px">${rub(financeGoal.saved)}</b><span class="savings-amount">из ${rub(financeGoal.target)}</span></div><div class="savings-progress"><i style="width:${pct}%"></i></div><div class="savings-foot"><span>${pct}% от цели</span><span>Осталось ${rub(Math.max(0,financeGoal.target-financeGoal.saved))}</span></div><div class="savings-actions"><button class="savings-add-action" onclick="addSavingsAmount()">＋ Пополнить</button><button class="savings-edit-action" onclick="openSavingsGoal()">Изменить цель</button></div>`}
 function addSavingsAmount(){const el=document.getElementById('modalcontent');el.innerHTML='<h3>Пополнить накопления</h3><p>Сколько добавить к накопленной сумме?</p><input id="savingAddition" type="text" inputmode="numeric" autocomplete="off" placeholder="Сумма ₽" class="money-input" oninput="formatMoneyInput(this)" onkeydown="handleMoneyKeydown(event)" style="margin:5px 0 14px"><button class="primary" onclick="confirmSavingsAddition()">Добавить</button>';showModal()}
@@ -1288,6 +1288,7 @@ const financeTransactions=[];
 const financeStorageKey='skillup_finance_operations_v11';
 const FINANCE_DEMO_PACK_KEY='skillup_finance_demo_pack_v18';
 const FINANCE_DEMO_GOAL_KEY='skillup_finance_demo_goal_v18';
+const FINANCE_USER_GOAL_KEY='skillup_finance_user_goal_v29_2';
 let financeSavedEntries=[];
 let financeDemoPackId=null;
 let financeDemoIncomeEntries=null;
@@ -1299,7 +1300,7 @@ function renderFinanceEntries(){
  el.innerHTML=combined.length?combined.map(financeEntryHtml).join(''):'<div class="empty">Пока нет операций</div>';
 }
 function persistFinanceDemoGoal(){
- if(!financeDemoPackId)return;
+ if(!financeDemoPackId){try{localStorage.setItem(FINANCE_USER_GOAL_KEY,JSON.stringify(financeGoal));window.skillupCloudChanged?.('finances')}catch(e){}return;}
  try{localStorage.setItem(FINANCE_DEMO_GOAL_KEY,JSON.stringify({id:financeDemoPackId,goal:financeGoal}))}catch(e){}
 }
 function financeEntryHtml(entry){
@@ -1319,7 +1320,7 @@ function recordFinanceOperation(type,category,amount,note){
   updateFinanceTotals();
   renderFinanceEntries();
   refreshFinanceAdviceDataHint();
-  try{localStorage.setItem(financeStorageKey,JSON.stringify(financeSavedEntries))}
+  try{localStorage.setItem(financeStorageKey,JSON.stringify(financeSavedEntries));window.skillupCloudChanged?.('finances')}
   catch(err){toast('Сохранено до перезагрузки — браузер ограничил память')}
   return true;
 }
@@ -1852,7 +1853,7 @@ function financeApplyDemoPack(id,restore=false){
  return true;
 }
 function restoreFinanceDemoPack(){
- try{const id=localStorage.getItem(FINANCE_DEMO_PACK_KEY);if(id&&FINANCE_DEMO_PRESETS[id])financeApplyDemoPack(id,true)}catch(e){}
+ try{const id=localStorage.getItem(FINANCE_DEMO_PACK_KEY);if(id&&FINANCE_DEMO_PRESETS[id])financeApplyDemoPack(id,true);else {const goal=JSON.parse(localStorage.getItem(FINANCE_USER_GOAL_KEY)||'null');if(goal&&typeof goal.name==='string'&&Number.isFinite(goal.target)&&goal.target>0&&Number.isFinite(goal.saved)&&goal.saved>=0)financeGoal=goal;}}catch(e){}
 }
 
 let demoSelectedPack=null;
@@ -1874,6 +1875,7 @@ function demoPreviewPack(id){
 }
 function demoApplyPack(){
  if(!demoSelectedPack)return;
+ window.skillupCloudPauseForDemo?.();
  const pack=devCreateDemoPack(demoSelectedPack);if(!pack)return;
  // All linked demo datasets are saved before touching live UI state.
  // Revert localStorage changes if a browser quota/permission error occurs midway.
@@ -1904,7 +1906,7 @@ function demoApplyPack(){
 
 let devState=devLoad();
 let devView={level:'overview',areaId:null,itemId:null};
-function devPersist(){try{localStorage.setItem(DEV_STORAGE_KEY,JSON.stringify(devState))}catch(e){toast('Сохранение недоступно в этом браузере')}}
+function devPersist(){try{localStorage.setItem(DEV_STORAGE_KEY,JSON.stringify(devState));window.skillupCloudChanged?.('development')}catch(e){toast('Сохранение недоступно в этом браузере')}}
 function devDateKey(d=new Date()){return `${d.getFullYear()}-${String(d.getMonth()+1).padStart(2,'0')}-${String(d.getDate()).padStart(2,'0')}`}
 function devLocalDateOffset(delta){const d=new Date();d.setHours(12,0,0,0);d.setDate(d.getDate()+delta);return d}
 function devWeekStart(){const d=new Date();d.setHours(12,0,0,0);const day=(d.getDay()+6)%7;d.setDate(d.getDate()-day);return d}
@@ -2681,4 +2683,5 @@ restoreFinanceDemoPack();restoreFinanceOperations();restoreFinanceAnalysis();ren
   if(new URLSearchParams(location.search).get('skillup_debug')==='1')openDiagnostic();
 })();
 </script>
+<script src="/skillup-cloud.js" defer></script>
 </body></html>
