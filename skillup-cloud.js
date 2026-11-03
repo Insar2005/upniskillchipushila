@@ -318,7 +318,7 @@
     status=document.createElement('p');status.style.cssText='font-weight:700;margin:12px 0 6px';status.textContent='Проверяем подключение…';
     details=document.createElement('p');details.style.cssText='white-space:pre-line;color:#a3b7a9;font-size:12px;line-height:1.5';
     actions=document.createElement('div');
-    const note=document.createElement('p');note.className='muted';note.style.cssText='font-size:11px;margin-top:10px';note.textContent='Пока синхронизируются цели, навыки, привычки и пользовательские финансовые операции. Чаты ИИ и история прогресса — следующим этапом. Демоданные не отправляются автоматически.';
+    const note=document.createElement('p');note.className='muted';note.style.cssText='font-size:11px;margin-top:10px';note.textContent='Пока синхронизируются цели, навыки, привычки и пользовательские финансовые операции. Один ИИ-чат синхронизируется отдельно через PostgreSQL. История прогресса — следующим этапом. Демоданные не отправляются автоматически.';
     const exportButton=document.createElement('button');
     exportButton.type='button';exportButton.className='secondary';exportButton.textContent='↓ Сохранить локальную резервную копию';
     exportButton.style.cssText='width:100%;margin-top:11px;padding:11px;font-size:12px';
