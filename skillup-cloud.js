@@ -328,6 +328,7 @@
     const pill=profile.querySelector('.pill');badge=pill;markBadge('Локально');
     buttons([['Повторить подключение',()=>void connect(),true]]);
   }
+  window.skillupCloudRefresh=()=>void refresh();
   buildUI();
   void connect();
 })();

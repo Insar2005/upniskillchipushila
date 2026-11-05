@@ -819,6 +819,33 @@ textarea.dev-input{resize:vertical;min-height:95px}
 .ai3-error button{background:none;border:0;color:#d9f3e2;text-decoration:underline}
 .ai3-legacy{display:flex;gap:8px;flex-direction:column}
 .ai3-legacy .ai29-action{width:100%;margin-top:2px}
+
+/* v29.5 — one immersive chat; no scrolling past technical panels. */
+#assistant.active{position:fixed;inset:calc(74px + env(safe-area-inset-top)) 0 calc(67px + env(safe-area-inset-bottom));margin:auto;display:flex;flex-direction:column;max-width:520px;padding:0 15px;background:#090e0b;z-index:4;overflow:hidden;animation:none}
+#assistant.active .page-title{font-size:21px;letter-spacing:-.4px;margin:0 0 9px;line-height:1.1;flex:none}
+#assistant.active #devPlannerMount:empty{display:none}
+#assistant.active #ai29Root{flex:1;min-height:0}
+.su-chat-shell{display:flex;flex-direction:column;height:100%;min-height:0;border:1px solid #284334;border-radius:19px 19px 0 0;background:#101b14;overflow:hidden}
+.su-chat-top{display:flex;align-items:center;padding:10px 13px;border-bottom:1px solid #2a4333;gap:10px;flex:none;background:#14251a}
+.su-chat-avatar{width:36px;height:36px;border-radius:13px;display:grid;place-items:center;background:#9debb9;color:#163b28;font-size:23px}
+.su-chat-headline{flex:1;min-width:0;display:flex;flex-direction:column}.su-chat-headline strong{font-size:14px}.su-chat-headline span{font-size:10px;color:#9bbda7}
+.su-chat-more{border:0;background:transparent;color:#b7cdbd;padding:9px;font-weight:800;font-size:18px}
+.su-chat-settings{background:#1b2b20;border-bottom:1px solid #416348;padding:10px;display:flex;gap:6px;flex-wrap:wrap}.su-chat-settings button{background:#193b2a;border:1px solid #446852;border-radius:10px;padding:8px;color:#bce7c9;font-size:11px}.su-chat-settings span{color:#95ad9b;font-size:10px;width:100%}
+.su-chat-messages{flex:1;min-height:0;overflow-y:auto;overscroll-behavior:contain;padding:17px 11px 12px;display:flex;flex-direction:column;gap:11px;scrollbar-width:thin;scrollbar-color:#385c45 transparent}
+.su-bubble{padding:11px 12px;max-width:88%;min-width:90px;font-size:13px;line-height:1.55;overflow-wrap:anywhere;white-space:pre-wrap;border-radius:16px;color:#edf8ef}
+.su-bubble.mine{background:#205c3d;align-self:flex-end;border-bottom-right-radius:4px}.su-bubble.bot{background:#1d3023;border:1px solid #335542;align-self:flex-start;border-bottom-left-radius:4px}
+.su-bubble small{display:block;color:#acc6b5;font-size:9px;text-align:right;margin-top:7px;white-space:normal}
+.su-welcome{text-align:center;color:#b4cbba;margin:auto;max-width:260px;font-size:12px}.su-welcome-icon{font-size:34px;color:#a9e8bd}.su-welcome strong{display:block;color:#e7f6ec;font-size:19px;margin:6px 0}.su-welcome p{line-height:1.55}
+.su-chat-pills{display:flex;gap:6px;padding:8px 11px;overflow-x:auto;scrollbar-width:none;flex:none}.su-chat-pills button{white-space:nowrap;border:1px solid #355b43;background:#152a1d;color:#bde8c9;border-radius:99px;padding:7px 10px;font-size:10px}
+.su-chat-composer{display:flex;align-items:end;gap:6px;border-top:1px solid #2a4634;padding:10px 8px 11px;background:#121f17;flex:none}
+.su-chat-composer textarea{height:40px;max-height:116px;min-height:40px;flex:1;min-width:0;resize:none;overflow:auto;border:1px solid #345540;border-radius:13px;background:#0a160e;color:#edf9ef;padding:10px;font:inherit;font-size:13px;line-height:1.35;outline:none}
+.su-chat-composer textarea:focus{border-color:#84daa4}.su-attach,.su-mic,.su-send{width:38px;height:40px;border-radius:12px;display:grid;place-items:center;flex:none;font-size:21px;line-height:1;font-weight:700;cursor:pointer}
+.su-attach,.su-mic{background:#213828;border:1px solid #375d43;color:#b1eac3}.su-mic{font-size:18px}.su-mic.active{color:#ffb1ac;border-color:#bd6866;animation:voicePulse 1s infinite}.su-send{background:#a4edbf;border:0;color:#0a2a1a}.su-send:disabled{opacity:.5}
+.su-chat-error{flex:none;padding:6px 12px;color:#f2afaf;font-size:11px}.su-chat-error button{border:0;background:transparent;text-decoration:underline;color:#eaf8ee}
+.su-typing{align-self:flex-start;font-size:11px;color:#adc7b4;padding:8px 12px}.su-typing span{display:inline-block;height:5px;width:5px;border-radius:50%;background:#85d7a5;animation:voicePulse 1.2s infinite}
+.su-receipt{align-self:stretch;border:1px solid #477354;border-radius:16px;padding:12px;background:#193322;color:#e5f4e9;font-size:12px}.su-receipt-title{font-weight:800;font-size:14px}.su-receipt-meta{margin:5px 0 10px;color:#bbdfc7}.su-receipt-line{display:flex;gap:8px;justify-content:space-between;border-top:1px solid #395842;padding:6px 0}.su-receipt-line span{flex:1;min-width:0}.su-receipt-line strong{white-space:nowrap}.su-receipt-apply{background:#a2e8bb;color:#102a1b;border:0;border-radius:12px;padding:10px;width:100%;font-weight:800;margin:8px 0 4px}.su-receipt small{display:block;color:#a7c0ae;font-size:10px}
+.su-undo-receipt{font-size:10px;color:#a4b8a8;padding:8px;text-align:center}.su-undo-receipt button{color:#a1e9bf;background:transparent;border:1px solid #385a45;border-radius:9px;padding:6px}.su-currency{display:block;margin:7px 0}.su-currency select{background:#102017;color:#d6f0df;border:1px solid #4f8060;border-radius:8px;padding:7px}
+@media(max-width:360px){#assistant.active{padding:0 8px}.su-chat-composer{gap:4px}.su-attach,.su-mic,.su-send{width:34px}}
 </style>
 </head>
 <body>
@@ -837,7 +864,7 @@ textarea.dev-input{resize:vertical;min-height:95px}
 </section>
 <section class="screen" id="finance">
  <h1 class="page-title section-main-title">Финансы</h1>
- <div class="card finance-hero"><div class="cardhead"><span class="cardtitle">Общий баланс</span><button class="iconbtn" onclick="toast('Баланс учитывает все добавленные операции')" aria-label="Информация о балансе">ⓘ</button></div><div class="finance-balance" id="financeBalance">0 ₽</div><div class="finance-hero-foot" style="justify-content:flex-end"><button class="finance-add" onclick="startVoiceFinance()">🎙 Голосовая операция</button></div></div>
+ <div class="card finance-hero"><div class="cardhead"><span class="cardtitle">Баланс в рублях</span><button class="iconbtn" onclick="toast('Баланс учитывает все добавленные операции')" aria-label="Информация о балансе">ⓘ</button></div><div class="finance-balance" id="financeBalance">0 ₽</div><div id="financeForeignSummary" class="muted" style="font-size:11px;line-height:1.5;margin-top:12px" aria-live="polite"></div></div>
  <div class="finance-stats"><div class="card finance-stat"><div class="finance-stat-icon income-icon">↘</div><div class="muted finance-label">Доходы · месяц</div><b class="finance-income" id="financeIncome">0 ₽</b><button class="secondary finance-stat-action" onclick="openFinanceEntry('Доход')">＋ Добавить доход</button></div><div class="card finance-stat"><div class="finance-stat-icon expense-icon">↗</div><div class="muted finance-label">Расходы · месяц</div><b class="finance-expense" id="financeExpenses">0 ₽</b><button class="secondary finance-stat-action" onclick="openFinanceEntry('Расход')">＋ Добавить расход</button></div></div>
  <div class="card savings-card" id="savingsCard"><div class="cardhead"><div><div class="cardtitle">Цель накоплений</div><div class="muted" style="font-size:11px;margin-top:4px">Создай цель и следи за прогрессом</div></div></div><button class="primary savings-create" onclick="openSavingsGoal()">＋ Добавить цель накоплений</button></div>
  <div class="card expense-breakdown"><div class="cardhead"><span class="cardtitle">Подробнее о расходах</span><div class="expense-period-control" id="expensePeriodControl"><button type="button" class="expense-period-trigger" id="financePeriodBtn" aria-haspopup="listbox" aria-controls="financePeriodMenu" aria-expanded="false" onclick="toggleFinancePeriodMenu()"><span id="financePeriodLabel">За месяц</span><span class="period-chevron" aria-hidden="true">⌄</span></button><div class="expense-period-menu" id="financePeriodMenu" role="listbox" aria-label="Период расходов" hidden><button type="button" class="expense-period-option" role="option" data-period="day" aria-selected="false" onclick="selectFinancePeriod('day')">За день</button><button type="button" class="expense-period-option" role="option" data-period="week" aria-selected="false" onclick="selectFinancePeriod('week')">За неделю</button><button type="button" class="expense-period-option" role="option" data-period="month" aria-selected="true" onclick="selectFinancePeriod('month')">За месяц</button><button type="button" class="expense-period-option" role="option" data-period="quarter" aria-selected="false" onclick="selectFinancePeriod('quarter')">За 3 месяца</button><button type="button" class="expense-period-option" role="option" data-period="year" aria-selected="false" onclick="selectFinancePeriod('year')">За год</button></div></div></div><div class="expense-chart-wrap" id="expenseChartWrap" aria-live="polite"></div><div class="expense-chart-caption">Распределение расходов по категориям за выбранный период.</div></div>
@@ -856,7 +883,7 @@ textarea.dev-input{resize:vertical;min-height:95px}
  <div class="card"><div class="cardtitle" style="margin-bottom:6px">Мои направления</div><div id="profileAreas"></div><button class="secondary" style="width:100%;margin-top:12px" onclick="go('development');devShowOverview()">Настроить в Развитии →</button></div>
  <div class="card demo-profile-card"><div class="cardhead"><span class="cardtitle">Тестовые сценарии SkillUp</span><span class="pill">6 вариантов</span></div><p class="demo-profile-caption">Попробуй шесть готовых жизненных сценариев: цели, привычки, доходы, расходы и накопления.</p><button type="button" class="secondary demo-profile-button" onclick="demoOpenPicker()">✧ Заполнить демо-данными</button><p class="demo-profile-note">При загрузке заменятся цели, привычки и финансовые демоданные. Сначала покажем предупреждение.</p></div>
  <div class="card"><div class="profile-row"><div class="area-icon">◈</div><div class="grow"><div class="rowtitle">Напоминания</div><div class="rowdesc">Мягкие напоминания о целях</div></div><input type="checkbox" checked onchange="toast(this.checked?'Напоминания включены':'Напоминания выключены')"></div><div class="profile-row"><div class="area-icon">◐</div><div class="grow"><div class="rowtitle">Тёмная тема</div><div class="rowdesc">Минималистичный тёмный интерфейс</div></div><span class="pill">Вкл.</span></div></div>
- <p class="muted" style="font-size:10px;text-align:center">Авторизация Telegram подключена. Цели, финансы и история ИИ пока сохраняются локально до включения облачной синхронизации.</p>
+ <p class="muted" style="font-size:10px;text-align:center">Управление данными и резервными копиями находится в блоке «Синхронизация SkillUp».</p>
 </section>
 </main>
 </div>
@@ -1288,7 +1315,8 @@ const expenseCategories=[
   {name:'Продукты',color:'#9BE8B7'},
   {name:'Еда вне дома',color:'#54C98B'},
   {name:'Жилье',color:'#2D9B68'},
-  {name:'Транспорт',color:'#1F6848'}
+  {name:'Транспорт',color:'#1F6848'},
+  {name:'Прочее',color:'#477F64'}
 ];
 function monthDemoDate(monthShift,day){const now=new Date(),date=new Date(now.getFullYear(),now.getMonth()+monthShift,1,12);const lastDay=new Date(date.getFullYear(),date.getMonth()+1,0).getDate();const targetDay=Math.min(day,lastDay,monthShift===0?now.getDate():lastDay);date.setDate(Math.max(1,targetDay));date.setHours(0,0,0,0);return date}
 // New accounts start empty. The six optional demo packs supply their own transactions.
@@ -1308,6 +1336,10 @@ function renderFinanceEntries(){
  const defaults=[]; // only show entries the user saved or explicitly loaded as demo
  const combined=[...financeSavedEntries,...(financeDemoRecentEntries||defaults)].sort((a,b)=>new Date(b.date)-new Date(a.date)).slice(0,9);
  el.innerHTML=combined.length?combined.map(financeEntryHtml).join(''):'<div class="empty">Пока нет операций</div>';
+ const foreign={};
+ financeSavedEntries.filter(e=>e.currency&&e.currency!=='RUB').forEach(e=>{const c=e.currency;foreign[c]=(foreign[c]||0)+(e.type==='Доход'?e.amount:-e.amount)});
+ const foreignEl=document.getElementById('financeForeignSummary');
+ if(foreignEl)foreignEl.textContent=Object.keys(foreign).length?'Другие валюты (без конвертации): '+Object.entries(foreign).map(([c,n])=>`${n>=0?'+':'−'}${Math.abs(n).toLocaleString('ru-RU')} ${c}`).join(' · '):'';
 }
 function persistFinanceDemoGoal(){
  if(!financeDemoPackId){try{localStorage.setItem(FINANCE_USER_GOAL_KEY,JSON.stringify(financeGoal));window.skillupCloudChanged?.('finances')}catch(e){}return;}
@@ -1316,7 +1348,9 @@ function persistFinanceDemoGoal(){
 function financeEntryHtml(entry){
   const sign=entry.type==='Расход'?'−':'+';
   const caption=entry.note?`<div class="rowdesc" style="overflow-wrap:anywhere">${escapeHtml(entry.note)}</div>`:'';
-  return `<div class="listrow"><div class="area-icon">${sign}</div><div class="grow" style="min-width:0"><div class="rowtitle">${escapeHtml(entry.category)}</div>${caption}<div class="rowdesc">${new Date(entry.date).toLocaleDateString('ru-RU',{day:'numeric',month:'short'})} · ${entry.type}</div></div><b class="${entry.type==='Расход'?'finance-expense':'finance-income'}" style="white-space:nowrap;font-size:12px">${sign}${rub(entry.amount)}</b></div>`;
+  const currency=entry.currency||'RUB';
+  const amountLabel=currency==='RUB'?rub(entry.amount):`${Number(entry.amount).toLocaleString('ru-RU',{maximumFractionDigits:2})} ${escapeHtml(currency)}`;
+  return `<div class="listrow"><div class="area-icon">${sign}</div><div class="grow" style="min-width:0"><div class="rowtitle">${escapeHtml(entry.category)}</div>${caption}<div class="rowdesc">${new Date(entry.date).toLocaleDateString('ru-RU',{day:'numeric',month:'short'})} · ${entry.type}</div></div><b class="${entry.type==='Расход'?'finance-expense':'finance-income'}" style="white-space:nowrap;font-size:12px">${sign}${amountLabel}</b></div>`;
 }
 function recordFinanceOperation(type,category,amount,note){
   if(!financeVoiceCategories[type]?.includes(category)||!Number.isSafeInteger(amount)||amount<=0)return false;
@@ -1339,9 +1373,11 @@ function restoreFinanceOperations(){
     const raw=JSON.parse(localStorage.getItem(financeStorageKey)||'[]');
     if(!Array.isArray(raw))return;
     financeSavedEntries=raw.filter(entry=>{
-      return entry&&financeVoiceCategories[entry.type]?.includes(entry.category)&&Number.isSafeInteger(entry.amount)&&entry.amount>0&&entry.amount<1000000000000&&!isNaN(new Date(entry.date).getTime());
+      return entry&&['Доход','Расход'].includes(entry.type)&&typeof entry.category==='string'&&entry.category.length>0&&entry.category.length<=48&&Number.isFinite(entry.amount)&&entry.amount>0&&entry.amount<1000000000000&&(!entry.currency||/^(RUB|KGS|USD|EUR|KZT|UZS|CNY|TRY|AED|GBP)$/.test(entry.currency))&&!isNaN(new Date(entry.date).getTime());
     }).slice(0,500);
     for(const entry of financeSavedEntries){
+      // Never mix KGS/USD/etc with RUB dashboard totals without a verified FX rate.
+      if(entry.currency&&entry.currency!=='RUB')continue;
       if(entry.type==='Расход'){
         financeBalanceValue-=entry.amount;financeExpenseValue+=entry.amount;
         financeTransactions.push({category:entry.category,amount:entry.amount,date:new Date(entry.date)});
@@ -1408,7 +1444,7 @@ function renderExpenseChart(){
   const container=document.getElementById('expenseChartWrap');if(!container)return;
   const now=new Date(),start=startOfFinancePeriod(financePeriod,now);
   const counts=Object.fromEntries(expenseCategories.map(cat=>[cat.name,0]));
-  financeTransactions.forEach(entry=>{const date=new Date(entry.date);if(date>=start&&date<=now&&Object.hasOwn(counts,entry.category))counts[entry.category]+=entry.amount});
+  financeTransactions.forEach(entry=>{const date=new Date(entry.date);if(date>=start&&date<=now){const cat=Object.hasOwn(counts,entry.category)?entry.category:'Прочее';counts[cat]+=entry.amount}});
   const total=Object.values(counts).reduce((a,b)=>a+b,0);
   const cx=200,cy=125,r=76;
   // Рисуем цветные участки как замкнутые кольцевые секторы, а не пунктирные круги.
