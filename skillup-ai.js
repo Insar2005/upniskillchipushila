@@ -86,7 +86,7 @@ async function send(text){
  const message=String(text||'').trim().slice(0,1500);if(!message||busy||uploading||voiceBusy)return;
  if(!loaded){error='История пока не загрузилась. Обнови чат.';render();return;}
  busy=true;draft=message;error='';const reqId=pendingId||uid();pendingId=reqId;render(true);
- try{const result=await api('/api/v1/ai/chat',{message,requestId:reqId,focusItemId:focusId||undefined});if(result.financeSaved)window.skillupCloudRefresh?.();draft='';pendingId='';await reload({silent:true});}
+ try{const result=await api('/api/v1/ai/chat',{message,requestId:reqId,focusItemId:focusId||undefined});if(result.financeSaved||result.developmentChanged)window.skillupCloudRefresh?.();draft='';pendingId='';await reload({silent:true});}
  catch(e){error=e.message||'Нет ответа от сервера';try{const r=await api('/api/v1/ai/history');messages=r.messages||[];if(messages.slice(-2).some(x=>x.role==='user'&&x.text===message)){draft='';pendingId='';error='';}}catch(_){}}
  finally{busy=false;render(true);}
 }
