@@ -12,6 +12,7 @@
 
 <title>SkillUp — твой прогресс</title>
 <script src="https://telegram.org/js/telegram-web-app.js"></script>
+<script>if(!window.Telegram?.WebApp?.initData)document.documentElement.classList.add('pwa-auth-pending');</script>
 <style>
 :root{--bg:#090d0b;--panel:#121916;--panel2:#18211c;--line:#26352d;--mint:#a1e9bf;--green:#28b77b;--muted:#8d9b92;--white:#f1f7f3;--danger:#ef9d9d}
 *{box-sizing:border-box}html{background:var(--bg)}body{margin:0;background:radial-gradient(ellipse at 50% -10%,#173326 0%,var(--bg) 43%);color:var(--white);font:15px/1.4 -apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Arial,sans-serif;min-height:100vh;padding-bottom:calc(86px + env(safe-area-inset-bottom));-webkit-tap-highlight-color:transparent}
@@ -860,15 +861,14 @@ html.skillup-ai-locked,body.skillup-ai-locked {
 }
 body.skillup-ai-locked { position:fixed; inset:0; touch-action:none; }
 body.skillup-ai-locked .app {height:100dvh;max-height:100dvh;overflow:hidden;}
-body.skillup-ai-locked .top {visibility:hidden;pointer-events:none;}
+body.skillup-ai-locked .top {visibility:visible;pointer-events:auto;position:relative;z-index:6;}
 body.skillup-ai-locked #assistant.active {
   /* Keep below Telegram's own title bar, above bottom navigation. */
-  top:calc(74px + env(safe-area-inset-top));
+  top:calc(75px + env(safe-area-inset-top));
   bottom:calc(67px + env(safe-area-inset-bottom));
   height:auto;min-height:0;
   overscroll-behavior:none;touch-action:none;
 }
-body.skillup-ai-locked #assistant.active .page-title,
 body.skillup-ai-locked #assistant.active #devPlannerMount {display:none!important;}
 body.skillup-ai-locked #ai29Root,
 body.skillup-ai-locked #ai29Root .su-chat-shell {height:100%;min-height:0;max-height:100%;}
@@ -879,6 +879,21 @@ body.skillup-ai-locked .su-chat-messages {
 body.skillup-ai-locked .su-chat-composer,
 body.skillup-ai-locked .su-chat-top {touch-action:manipulation;}
 /* Input remains accessible when iOS shrinks the visual viewport for the keyboard. */
+
+/* v29.12: keep the common page heading without a wasted blank upper region. */
+#assistant.active {top:calc(75px + env(safe-area-inset-top));}
+body.skillup-ai-locked #assistant.active .page-title{
+  display:block!important;font-size:24px;line-height:1.14;margin:2px 0 12px;
+  padding:0 2px;flex:none;
+}
+body.skillup-ai-locked #assistant.active #ai29Root {flex:1;min-height:0;}
+html.pwa-auth-pending .app {visibility:hidden;}
+.pwa-login-layer{position:fixed;inset:0;z-index:1000;background:#090d0b;display:flex;align-items:center;justify-content:center;padding:22px;color:#f0fbf3;font:15px/1.5 -apple-system,BlinkMacSystemFont,system-ui,sans-serif}
+.pwa-login-card{width:min(100%,420px);border:1px solid #355a43;border-radius:23px;background:#14221a;padding:28px 23px;text-align:center;box-shadow:0 18px 45px #0008}
+.pwa-login-card .pwa-logo{display:grid;place-items:center;width:60px;height:60px;margin:0 auto 14px;border-radius:18px;background:linear-gradient(135deg,#b5f2c9,#48b783);color:#0b2a1b;font-size:30px;font-weight:900}
+.pwa-login-card h2{font-size:25px;margin:0 0 8px}.pwa-login-card p{color:#b7cbbd;font-size:13px;margin:0 0 23px}
+.pwa-login-card a{display:block;background:#a1e9bf;border:0;border-radius:14px;color:#102a1a;font-weight:800;text-decoration:none;padding:14px}
+.pwa-login-card small{display:block;margin-top:15px;color:#a0b8a7}
 </style>
 </head>
 <body>
@@ -2762,6 +2777,23 @@ restoreFinanceDemoPack();restoreFinanceOperations();restoreFinanceAnalysis();ren
   if(new URLSearchParams(location.search).get('skillup_debug')==='1')openDiagnostic();
 })();
 </script>
-<script src="/skillup-cloud.js" defer></script>
-<script src="/skillup-ai.js" defer></script>
+<script>
+(async()=>{
+  const startModules=()=>{
+    const cloud=document.createElement('script');cloud.src='/skillup-cloud.js';cloud.onload=()=>{
+      const ai=document.createElement('script');ai.src='/skillup-ai.js';document.body.appendChild(ai);
+    };document.body.appendChild(cloud);
+  };
+  if(window.Telegram?.WebApp?.initData){startModules();return;}
+  const layer=document.createElement('div');layer.className='pwa-login-layer';layer.setAttribute('role','dialog');layer.setAttribute('aria-modal','true');
+  layer.innerHTML='<div class="pwa-login-card"><div class="pwa-logo">S</div><h2>SkillUp</h2><p id="pwaLoginDesc">Проверяем вход…</p><a href="/api/v1/auth/login" id="pwaLoginLink" style="display:none">Войти через Telegram</a><small>Тот же аккаунт, что и в Telegram Mini App</small></div>';
+  document.body.appendChild(layer);
+  try{
+    const r=await fetch('/api/v1/auth/me',{cache:'no-store',credentials:'same-origin'});
+    if(r.ok){window.skillupPwaAuthenticated=true;layer.remove();document.documentElement.classList.remove('pwa-auth-pending');startModules();return;}
+  }catch(e){}
+  document.getElementById('pwaLoginDesc').textContent='Для доступа к своим финансам и целям войди через Telegram.';
+  document.getElementById('pwaLoginLink').style.display='block';
+})();
+</script>
 </body></html>

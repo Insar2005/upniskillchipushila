@@ -4,7 +4,7 @@
  */
 (() => {
   'use strict';
-  const API = 'https://skillup-api-production-3d6c.up.railway.app';
+  const API = window.Telegram?.WebApp?.initData ? 'https://skillup-api-production-3d6c.up.railway.app' : location.origin;
   const KEYS = {
     development: 'skillup_development_v16',
     finances: 'skillup_finance_operations_v11',
@@ -129,11 +129,11 @@
   }
   async function api(path,options={}){
     const initData=window.Telegram?.WebApp?.initData;
-    if(!initData)throw new Error('Открой SkillUp через Telegram-бота');
+    if(!initData&&!window.skillupPwaAuthenticated)throw new Error('Войди через Telegram');
     const controller=new AbortController();
     const t=setTimeout(()=>controller.abort(),14000);
     try {
-      const response=await fetch(API+path,{...options,cache:'no-store',signal:controller.signal,headers:{'X-Telegram-Init-Data':initData,...(options.body?{'Content-Type':'application/json'}:{}),...(options.headers||{})}});
+      const response=await fetch(API+path,{...options,cache:'no-store',credentials:'same-origin',signal:controller.signal,headers:{...(initData?{'X-Telegram-Init-Data':initData}:{}),...(options.body?{'Content-Type':'application/json'}:{}),...(options.headers||{})}});
       const data=await response.json().catch(()=>({}));
       if(!response.ok){const e=new Error(response.status===401?'Ошибка Telegram-авторизации (401)':`API: HTTP ${response.status}`);e.status=response.status;throw e;}
       return data;

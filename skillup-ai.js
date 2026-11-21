@@ -3,21 +3,21 @@
  */
 (()=>{
 'use strict';
-const API='https://skillup-api-production-3d6c.up.railway.app';
+const API=window.Telegram?.WebApp?.initData?'https://skillup-api-production-3d6c.up.railway.app':location.origin;
 const root=document.getElementById('ai29Root');if(!root)return;
 let messages=[],draft='',loaded=false,loading=false,busy=false,uploading=false,error='',pendingId='',focusId='',voiceRecorder=null,voiceChunks=[],voiceStream=null,voiceBusy=false,receiptDrafts=[],recentReceipts=[],settingsOpen=false;
 const esc=s=>String(s??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
 const asMoney=(n,c)=>new Intl.NumberFormat('ru-RU',{minimumFractionDigits:0,maximumFractionDigits:2}).format(n)+' '+({KGS:'сом',RUB:'₽',USD:'$',EUR:'€',KZT:'₸'}[c]||c);
 const fmt=d=>{try{return new Date(d).toLocaleString('ru-RU',{day:'numeric',month:'short',hour:'2-digit',minute:'2-digit'});}catch{return ''}};
 const uid=()=>crypto.randomUUID?crypto.randomUUID():`${Date.now().toString(16).padStart(8,'0')}-0000-4000-8000-${Math.random().toString(16).slice(2,14).padEnd(12,'0')}`;
-const auth=()=>{const d=window.Telegram?.WebApp?.initData;if(!d)throw Error('Открой SkillUp через Telegram-бота');return d;};
+const auth=()=>{const d=window.Telegram?.WebApp?.initData;if(!d&&!window.skillupPwaAuthenticated)throw Error('Войди через Telegram');return d||'';};
 const tz=()=>{try{return Intl.DateTimeFormat().resolvedOptions().timeZone||'UTC'}catch{return 'UTC'}};
 async function api(path,body,rawType,photoPrompt){
- const headers={'X-Telegram-Init-Data':auth(),'X-SkillUp-Timezone':tz()};
+ const d=auth();const headers={...(d?{'X-Telegram-Init-Data':d}:{}),'X-SkillUp-Timezone':tz()};
  if(body!==undefined){headers['Content-Type']=rawType||'application/json';if(photoPrompt)headers['X-SkillUp-Photo-Prompt']=encodeURIComponent(photoPrompt).slice(0,400);}
  const controller=new AbortController(),timeout=setTimeout(()=>controller.abort(),65000);
  try{
-  const r=await fetch(API+path,{method:body===undefined?'GET':'POST',headers,body:body===undefined?undefined:rawType?body:JSON.stringify(body),cache:'no-store',signal:controller.signal});
+  const r=await fetch(API+path,{method:body===undefined?'GET':'POST',credentials:'same-origin',headers,body:body===undefined?undefined:rawType?body:JSON.stringify(body),cache:'no-store',signal:controller.signal});
   const data=await r.json().catch(()=>({}));if(!r.ok)throw Error(data.message||data.error||`HTTP ${r.status}`);return data;
  }finally{clearTimeout(timeout)}
 }
@@ -29,7 +29,7 @@ async function reload({silent=false}={}){
 }
 function render(scroll=false){
  const oldScroll=root.querySelector('.su-chat-messages'),prev=oldScroll?oldScroll.scrollTop:null;
- const status=!window.Telegram?.WebApp?.initData?'Открыть в Telegram':voiceBusy?'Распознаю голос…':uploading?'Анализирую файл…':busy?'Пишет…':loading?'Синхронизация…':error?'Нет соединения':'В сети';
+ const status=(!window.Telegram?.WebApp?.initData&&!window.skillupPwaAuthenticated)?'Войти через Telegram':voiceBusy?'Распознаю голос…':uploading?'Анализирую файл…':busy?'Пишет…':loading?'Синхронизация…':error?'Нет соединения':'В сети';
  root.innerHTML=`<div class="su-chat-shell">
   <header class="su-chat-top"><div class="su-chat-avatar" aria-hidden="true">✦</div><div class="su-chat-headline"><strong>SkillUp AI</strong><span>${esc(status)}</span></div><button class="su-chat-more" id="suMore" aria-label="Настройки чата" type="button">•••</button></header>
   ${settingsOpen?`<div class="su-chat-settings"><button type="button" id="suRefresh">↻ Обновить переписку</button>${oldMessages().length?'<button type="button" id="suImport">Перенести старую историю</button>':''}<span>История хранится в твоём аккаунте. Старые данные не удаляются.</span></div>`:''}
@@ -86,7 +86,7 @@ async function send(text){
  const message=String(text||'').trim().slice(0,1500);if(!message||busy||uploading||voiceBusy)return;
  if(!loaded){error='История пока не загрузилась. Обнови чат.';render();return;}
  busy=true;draft=message;error='';const reqId=pendingId||uid();pendingId=reqId;render(true);
- try{const result=await api('/api/v1/ai/chat',{message,requestId:reqId,focusItemId:focusId||undefined});if(result.financeSaved||result.developmentChanged)window.skillupCloudRefresh?.();draft='';pendingId='';await reload({silent:true});}
+ try{const result=await api('/api/v1/ai/chat',{message,requestId:reqId,focusItemId:focusId||undefined});if(result.financeSaved)window.skillupCloudRefresh?.();draft='';pendingId='';await reload({silent:true});}
  catch(e){error=e.message||'Нет ответа от сервера';try{const r=await api('/api/v1/ai/history');messages=r.messages||[];if(messages.slice(-2).some(x=>x.role==='user'&&x.text===message)){draft='';pendingId='';error='';}}catch(_){}}
  finally{busy=false;render(true);}
 }
@@ -134,11 +134,11 @@ function addCurrencySetting(){
  card.innerHTML=`<div class="cardtitle">Основная валюта</div><p class="muted" style="font-size:11px">Если не укажешь валюту в сообщении, бот использует выбранную здесь. Другие валюты хранятся отдельно и не складываются без курса.</p><select id="suPrefSelect" class="voice-category" aria-label="Основная валюта"><option value="RUB">RUB · рубль</option><option value="KGS">KGS · сом</option><option value="USD">USD · доллар</option><option value="EUR">EUR · евро</option><option value="KZT">KZT · тенге</option></select><span id="suPrefStatus" class="muted" style="font-size:11px"></span>`;
  const cloud=profile.querySelector('#skillup-cloud-panel');if(cloud)cloud.after(card);else profile.append(card);
  const select=card.querySelector('#suPrefSelect'),label=card.querySelector('#suPrefStatus');
- async function fetchPref(){try{const a=await api('/api/v1/preferences');select.value=a.preferredCurrency||'RUB';label.textContent='';}catch(e){label.textContent='Настройка доступна после входа через Telegram.';}}
+ async function fetchPref(){try{const a=await api('/api/v1/preferences');select.value=a.preferredCurrency||'RUB';label.textContent='';}catch(e){label.textContent='Для настройки нужно войти в аккаунт.';}}
  select.addEventListener('change',async()=>{const next=select.value;label.textContent='Сохраняю…';try{await apiPut('/api/v1/preferences',{preferredCurrency:next});label.textContent='Сохранено';}catch(e){label.textContent='Не удалось сохранить: '+e.message;}});
  void fetchPref();
 }
-async function apiPut(path,body){const r=await fetch(API+path,{method:'PUT',headers:{'Content-Type':'application/json','X-Telegram-Init-Data':auth()},body:JSON.stringify(body)});const a=await r.json().catch(()=>({}));if(!r.ok)throw Error(a.message||a.error||`HTTP ${r.status}`);return a;}
+async function apiPut(path,body){const r=await fetch(API+path,{method:'PUT',credentials:'same-origin',headers:{'Content-Type':'application/json',...(auth()?{'X-Telegram-Init-Data':auth()}: {})},body:JSON.stringify(body)});const a=await r.json().catch(()=>({}));if(!r.ok)throw Error(a.message||a.error||`HTTP ${r.status}`);return a;}
 addCurrencySetting();
 render();void reload();
 })();
