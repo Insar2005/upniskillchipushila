@@ -4,6 +4,12 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no,viewport-fit=cover">
 <meta name="theme-color" content="#090d0b">
+<link rel="manifest" href="/manifest.webmanifest">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="apple-mobile-web-app-title" content="SkillUp">
+<link rel="apple-touch-icon" href="/icons/icon-180.png">
+
 <title>SkillUp — твой прогресс</title>
 <script src="https://telegram.org/js/telegram-web-app.js"></script>
 <style>
@@ -846,6 +852,33 @@ textarea.dev-input{resize:vertical;min-height:95px}
 .su-receipt{align-self:stretch;border:1px solid #477354;border-radius:16px;padding:12px;background:#193322;color:#e5f4e9;font-size:12px}.su-receipt-title{font-weight:800;font-size:14px}.su-receipt-meta{margin:5px 0 10px;color:#bbdfc7}.su-receipt-line{display:flex;gap:8px;justify-content:space-between;border-top:1px solid #395842;padding:6px 0}.su-receipt-line span{flex:1;min-width:0}.su-receipt-line strong{white-space:nowrap}.su-receipt-apply{background:#a2e8bb;color:#102a1b;border:0;border-radius:12px;padding:10px;width:100%;font-weight:800;margin:8px 0 4px}.su-receipt small{display:block;color:#a7c0ae;font-size:10px}
 .su-undo-receipt{font-size:10px;color:#a4b8a8;padding:8px;text-align:center}.su-undo-receipt button{color:#a1e9bf;background:transparent;border:1px solid #385a45;border-radius:9px;padding:6px}.su-currency{display:block;margin:7px 0}.su-currency select{background:#102017;color:#d6f0df;border:1px solid #4f8060;border-radius:8px;padding:7px}
 @media(max-width:360px){#assistant.active{padding:0 8px}.su-chat-composer{gap:4px}.su-attach,.su-mic,.su-send{width:34px}}
+
+/* v29.11.2: stop background scroll ONLY while the AI chat is active. */
+html.skillup-ai-locked,body.skillup-ai-locked {
+  height:100%; width:100%; overflow:hidden!important;
+  overscroll-behavior:none;
+}
+body.skillup-ai-locked { position:fixed; inset:0; touch-action:none; }
+body.skillup-ai-locked .app {height:100dvh;max-height:100dvh;overflow:hidden;}
+body.skillup-ai-locked .top {visibility:hidden;pointer-events:none;}
+body.skillup-ai-locked #assistant.active {
+  /* Keep below Telegram's own title bar, above bottom navigation. */
+  top:calc(74px + env(safe-area-inset-top));
+  bottom:calc(67px + env(safe-area-inset-bottom));
+  height:auto;min-height:0;
+  overscroll-behavior:none;touch-action:none;
+}
+body.skillup-ai-locked #assistant.active .page-title,
+body.skillup-ai-locked #assistant.active #devPlannerMount {display:none!important;}
+body.skillup-ai-locked #ai29Root,
+body.skillup-ai-locked #ai29Root .su-chat-shell {height:100%;min-height:0;max-height:100%;}
+body.skillup-ai-locked .su-chat-messages {
+  overflow-y:auto!important;overscroll-behavior:contain;
+  -webkit-overflow-scrolling:touch;touch-action:pan-y;
+}
+body.skillup-ai-locked .su-chat-composer,
+body.skillup-ai-locked .su-chat-top {touch-action:manipulation;}
+/* Input remains accessible when iOS shrinks the visual viewport for the keyboard. */
 </style>
 </head>
 <body>
@@ -1671,7 +1704,7 @@ function animatePremiumTab(id){
  });
 }
 
-function go(id){if(id==='plans')id='development';if(id==='finance'){renderExpenseChart();renderFinanceAdvice();}document.querySelectorAll('.screen').forEach(x=>x.classList.toggle('active',x.id===id));document.querySelectorAll('.navbtn').forEach(x=>x.classList.toggle('active',x.dataset.screen===id));const fab=document.getElementById('aiFab');const tip=document.getElementById('aiTip');fab.style.display=(id==='assistant'||id==='finance'||id==='development')?'none':'flex';fab.classList.toggle('compact',id==='home');if(id!=='home')tip.style.display='none';window.scrollTo({top:0,behavior:'smooth'});if(id==='development')devRender();if(id==='profile')renderProfileAreas();if(id==='assistant'){devRenderPlanner();ai29Render();}requestAnimationFrame(()=>animatePremiumTab(id))}
+function go(id){if(id==='plans')id='development';document.documentElement.classList.toggle('skillup-ai-locked',id==='assistant');document.body.classList.toggle('skillup-ai-locked',id==='assistant');if(id==='finance'){renderExpenseChart();renderFinanceAdvice();}document.querySelectorAll('.screen').forEach(x=>x.classList.toggle('active',x.id===id));document.querySelectorAll('.navbtn').forEach(x=>x.classList.toggle('active',x.dataset.screen===id));const fab=document.getElementById('aiFab');const tip=document.getElementById('aiTip');fab.style.display=(id==='assistant'||id==='finance'||id==='development')?'none':'flex';fab.classList.toggle('compact',id==='home');if(id!=='home')tip.style.display='none';if(id!=='assistant')window.scrollTo({top:0,behavior:'instant'});if(id==='development')devRender();if(id==='profile')renderProfileAreas();if(id==='assistant'){devRenderPlanner();ai29Render();}requestAnimationFrame(()=>animatePremiumTab(id))}
 function toggleTask(el){const i=Number(el.dataset.task);if(completed.has(i)){completed.delete(i);el.classList.remove('done');el.querySelector('.check').textContent=''}else{completed.add(i);el.classList.add('done');el.querySelector('.check').textContent='✓'}updateTaskCount();renderPlanTasks();if(completed.has(i))toast('Отлично! Ещё один шаг сделан ✨')}
 function updateTaskCount(){const t=[...completed].length;document.getElementById('taskCount').textContent=`${t} из 3`;document.getElementById('planTaskCount').textContent=`${t}/3 выполнено`}
 function renderPlanTasks(){const el=document.getElementById('planTasks');el.innerHTML=taskData.map((t,i)=>`<div class="task ${completed.has(i)?'done':''}" data-task="${i}" onclick="toggleTask(this)"><button class="check">${completed.has(i)?'✓':''}</button><div class="tasktext"><div class="taskname">${t[0]}</div><div class="taskmeta">${t[1]}</div></div><span class="tasktime">${t[2]}</span></div>`).join('')}
